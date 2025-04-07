@@ -1,0 +1,94 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <?php include 'head.php'; ?>
+    <title>View Attendance - Smart Attendance Monitoring System</title>
+</head>
+<body>
+
+    <!-- Sidebar -->
+    <?php include 'sidebar.php'; ?> 
+
+    <!-- Main Content -->
+    <main class="main" id="main">
+        <h1>View Attendance</h1>
+        <div class="container mt-4">
+            <h2 class="text-center">View Attendance Records</h2>
+
+            <!-- Filters -->
+            <div class="row mb-3">
+
+            <div class="col-md-3">
+                    <label for="sectionFilter" class="form-label">Section</label>
+                    <select id="sectionFilter" class="form-select">
+                        <option value="">All Section</option>
+                        <option value="A">LFCA123141</option>
+                        <option value="B">LFCA124125</option>
+                        <option value="C">LFCA123142</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label for="setgroupFilter" class="form-label">Course</label>
+                    <select id="setgroupFilter" class="form-select">
+                        <option value="">All Courses</option>
+                        <option value="Web Development">Web Development</option>
+                        <option value="Data Science">Data Science</option>
+                        <option value="Networking">Networking</option>
+                    </select>
+                </div>
+
+            <div class="col-md-3">
+                    <label for="setgroupFilter" class="form-label">Set Group</label>
+                    <select id="setgroupFilter" class="form-select">
+                        <option value="">Select SetGroup</option>
+                        <option value="Set A">Set A</option>
+                        <option value="Set B Science">Set B</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="dateFilter" class="form-label">Select Date</label>
+                    <input type="date" id="dateFilter" class="form-control">
+                </div>
+            </div>
+
+            <!-- Attendance Table -->
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Course Name</th>
+                        <th>Section</th>
+                        <th>Attendance Date</th>
+                    </tr>
+                </thead>
+                <tbody id="attendanceTable">
+                    <!-- Sample Data (Without Database) -->
+                    <tr>
+                        <td>Web Development</td>
+                        <td>A</td>
+                        <td>2025-03-22</td>
+                    </tr>
+                    <tr>
+                        <td>Data Science</td>
+                        <td>B</td>
+                        <td>2025-03-21</td>
+                    </tr>
+                    <tr>
+                        <td>Networking</td>
+                        <td>C</td>
+                        <td>2025-03-20</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+
+    </main>
+
+    <script src="../assets/js/global.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+
+</body>
+</html>

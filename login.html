@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./assets/css/login.css">
+    <title>Login</title>
+</head>
+<body>
+
+<div class="login" id="userFormContainer">
+    <h1>Login</h1>
+    <div class="user">
+        <form action="user-login.php" method="post" class="user-form">
+            <div class="input-field">
+                <label for="role">Role</label>
+                <select name="role" id="role" required>
+                    <option value="" disabled selected>Select your role</option>
+                    <option value="Admin">Admin</option>
+                    <option value="Teacher">Teacher</option>
+                </select>
+            </div>
+            <div class="input-field">
+                <label for="email">Email</label>
+                <input type="email" id="email" name="email" placeholder="Example@gmail.com" required>
+            </div>
+            <div class="input-field">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button type="submit" name="LogIn" id="userLogIn">Login</button>
+        </form>
+        <p>Are you a Student? <a href="#" onclick="toggleForms()">Click Here</a></p>
+    </div>
+</div>
+
+<div class="login hidden" id="studentFormContainer">
+    <h1>Login</h1>
+    <div class="student">
+        <form action="student-login.php" method="post" class="student-form">
+            <div class="input-field">
+                <label for="schoolId">School ID</label>
+                <input type="text" id="schoolId" placeholder="CA12345" required>
+            </div>
+            <div class="input-field">
+                <label for="studentPassword">Password</label>
+                <input type="password" id="studentPassword" name="studentPassword" required>
+            </div>
+            <button type="submit" name="studentLogIn" id="studentLogIn">Login</button>
+
+        </form>
+        <p>Are you a Staff? <a href="#" onclick="toggleForms()">Click Here</a></p>
+    </div>
+</div>
+
+<script>
+function toggleForms() {
+    document.getElementById('userFormContainer').classList.toggle('hidden');
+    document.getElementById('studentFormContainer').classList.toggle('hidden');
+}
+</script>
+
+</body>
+</html>
