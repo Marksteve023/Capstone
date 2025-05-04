@@ -32,7 +32,7 @@ if (isset($_GET['id']) && filter_var($_GET['id'], FILTER_VALIDATE_INT)) {
     }
 }
 // Fetch users
-$sql = "SELECT user_id, school_id, picture, full_name, role, email, created_at FROM users";
+$sql = "SELECT user_id, school_user_id, picture, full_name, role, email, created_at FROM users";
 $stmt = $conn->prepare($sql);
 $stmt->execute();
 $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -67,13 +67,13 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="mb-3">
-                                    <label for="school_id" class="form-label">Teacher ID</label>
-                                    <input type="text" class="form-control" id="school_id" name="school_id" value="<?php echo htmlspecialchars($edit_user['school_id'] ?? ''); ?>" required>
+                                    <label for="school_user_id" class="form-label">Admin or Staff ID</label>
+                                    <input type="text" class="form-control" id="school_user_id" name="school_user_id" value="<?php echo htmlspecialchars($edit_user['school_user_id'] ?? ''); ?>" required>
                                 </div>
 
                                 <div class="mb-3">
                                     <label for="full_name" class="form-label">Full Name</label>
-                                    <input type="text" class="form-control" id="full_name" name="full_name" value="<?php echo htmlspecialchars($edit_user['full_name'] ?? ''); ?>" required>
+                                    <input type="text" class="form-control" id="full_name" name="full_name" placeholder="Last Name, First Name, Middle Initial" value="<?php echo htmlspecialchars($edit_user['full_name'] ?? ''); ?>" required>
                                 </div>
 
                                 <div class="mb-3">
@@ -89,7 +89,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                                 <div class="mb-3">
                                     <label for="email" class="form-label">Email</label>
-                                    <input type="email" class="form-control" id="email" name="email" value="<?php echo htmlspecialchars($edit_user['email'] ?? ''); ?>" required>
+                                    <input type="email" class="form-control" id="email" name="email" placeholder="example@gmail.com" value="<?php echo htmlspecialchars($edit_user['email'] ?? ''); ?>" required>
                                 </div>
 
                                 <div class="mb-3">
@@ -129,9 +129,13 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </div>
         
         <div class="user-list-container">
-            <h2 class="mb-0 text-center">List of Users</h2>
+
+            <div class="mb-0">
+                <h2 class="mb-0 text-center">List of Users</h2>
+            </div>
+            
             <!-- Search Bar -->     
-            <div class="search-wrapper">
+            <div class="search-wrapper my-3">
                 <input type="text" id="search-account" placeholder="Search by Name, Email, or Role" class="search-input">
             </div>
 
@@ -163,11 +167,16 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                         <img src="<?php echo !empty($user['picture']) ? '../assets/uploads/' . htmlspecialchars($user['picture']) : '../uploads/default.png'; ?>"
                                             alt="User Picture" class="user-picture">
                                     </td>
-                                    <td><?php echo htmlspecialchars($user['school_id']); ?></td>
+                                    <td><?php echo htmlspecialchars($user['school_user_id']); ?></td>
                                     <td><?php echo htmlspecialchars($user['full_name']); ?></td>
                                     <td><?php echo htmlspecialchars($user['role']); ?></td>
                                     <td><?php echo htmlspecialchars($user['email']); ?></td>
-                                    <td><?php echo htmlspecialchars($user['created_at']); ?></td>
+                                    <td>
+                                        <?php
+                                            $createdAt = new DateTime($user['created_at']);
+                                            echo htmlspecialchars($createdAt->format('Y-m-d g:i A'));
+                                        ?>
+                                    </td>
                                     <td>
                                         <div class="d-flex gap-2">
                                             <a href="?id=<?php echo htmlspecialchars($user['user_id']); ?>" 
@@ -195,8 +204,12 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <script src="../assets/js/admin.js"></script>
 
     <!-- Bootstrap JS and Popper.js -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+    <script src="../assets/js/popper.min.js"></script>
+    <!--<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>-->
+
+    <script src="../assets/js/bootstrap.min.js"></script>
+    <!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>-->
+
 
     <script>
         // Search Function

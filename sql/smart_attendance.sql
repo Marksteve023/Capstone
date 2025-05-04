@@ -72,10 +72,3 @@ CREATE TABLE attendance (
     FOREIGN KEY (rfid_tag) REFERENCES students(rfid_tag) ON DELETE CASCADE
 );
 
--- RFID Logs Table
-CREATE TABLE rfid_logs (
-    log_id INT AUTO_INCREMENT PRIMARY KEY,
-    rfid_tag VARCHAR(50) NOT NULL,
-    scan_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (rfid_tag) REFERENCES students(rfid_tag) ON DELETE CASCADE
-);

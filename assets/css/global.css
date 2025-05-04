@@ -513,7 +513,7 @@ h1{
 /* Table styling */
 .table {
   width: 100%;
-  border: none; /* Remove border */
+  /*border: 1px solid var(--title-color);*/
 }
 
 /* Sticky table header */
@@ -521,22 +521,24 @@ h1{
   position: sticky;
   top: 0;
   background-color: var(--body-color);
-  z-index: 10; /* Ensures header stays above content */
+  z-index: 10;
 }
 
 .table thead th {
-  color: var(--text-color);
+  color: var(--title-color);
   background-color: var(--body-color);
-  border: none; /* Remove header border */
+  /*border: 1px solid var(--title-color);*/
 }
 
 /* Table cells */
 .table th,
 .table td {
   padding: 1rem;
-  text-align: left;
+  text-align: center;
+  /*border: 1px solid var(--title-color);*/
   border: none;
-  color: var(--text-color);
+  border-bottom: 1px solid var(--title-color);
+  color: var(--title-color);
   background-color: var(--body-color);
 }
 
@@ -550,13 +552,11 @@ h1{
     border-radius: 50px ;
   }
   
-  
-
 /* =============
     SEARCH INPUT
 ================*/  
 
-.search-input {
+/*.search-input {
   width: 100%;
   padding: 0.8rem;
   font-size: 1rem;
@@ -569,6 +569,23 @@ h1{
 .search-wrapper{
   margin-top: 2rem;
   margin-bottom: 2rem;
+}*/
+
+ /* Search input styling */
+ .search-wrapper {
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.search-input {
+    width: 80%;
+    padding: 10px;
+    font-size: 1rem;
+    border-radius: 5px;
+    outline: none;
+    background-color: var(--body-color);
+    border: 1px solid var(--title-color);
+    color: var(--text-color);
 }
 
 .search-wrapper, .search-input:focus {
@@ -599,6 +616,9 @@ h1{
     color: #721c24;
     border: 1px solid #f5c6cb;
 }
+
+
+
 
 /*=============== BREAKPOINTS ===============*/
 /* For small devices */

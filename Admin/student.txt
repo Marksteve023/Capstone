@@ -1,0 +1,31 @@
+Adams John A. School-id & School-id & Password: CA1234567 - Academic Year: 2025-2026
+
+Baker Sarah L. School-id & Password: CA1234568 - Academic Year: 2025-2026
+
+Chang Michael K. School-id & Password: CA1234569 - Academic Year: 2025-2026
+
+Davis Emily R. School-id & Password: CA1234570 - Academic Year: 2025-2026
+
+Evans James P. School-id & Password: CA1234571 - Academic Year: 2025-2026
+
+Foster Olivia T. School-id & Password: CA1234572 - Academic Year: 2025-2026
+
+Gonzalez Luis M. School-id & Password: CA1234573 - Academic Year: 2025-2026
+
+Harris Megan N. School-id & Password: CA1234574 - Academic Year: 2025-2026
+
+Irwin Jack O. School-id & Password: CA1234575 - Academic Year: 2025-2026
+
+Johnson Maria S. School-id & Password: CA1234576 - Academic Year: 2025-2026
+
+King Alexander D. School-id & Password: CA1234577 - Academic Year: 2025-2026
+
+Lee Grace F. School-id & Password: CA1234578 - Academic Year: 2025-2026
+
+Miller Benjamin W. School-id & Password: CA1234579 - Academic Year: 2025-2026
+
+Nguyen Chloe Y. School-id & Password: CA1234580 - Academic Year: 2025-2026
+
+Parker David H. School-id & Password: CA1234581 - Academic Year: 2025-2026
+
+Rodriguez Sofia E. School-id & Password: CA1234582 - Academic Year: 2025-2026

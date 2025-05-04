@@ -5,28 +5,36 @@ if (session_status() == PHP_SESSION_NONE) {
 
 include '../config/db.php';
 
-$user_id = $_SESSION['student_id'] ?? null;
+$student_id = $_SESSION['student_id'] ?? null;
 
 // Default student values
 $student = [
     'student_name' => 'Student Name',
     'school_student_id' => 'CAxxxxxxx',
-    'picture' => '../assets/uploads/default.png'
+    'picture' => 'default.png'
 ];
 
-if ($user_id) {
+if ($student_id) {
     try {
-        // Corrected SQL Query
+        // Use PDO to fetch student details
         $stmt = $conn->prepare("SELECT student_name, school_student_id, picture FROM students WHERE student_id = :student_id");
-        $stmt->bindParam(':student_id', $user_id, PDO::PARAM_INT);
+        $stmt->bindParam(':student_id', $student_id, PDO::PARAM_INT);
         $stmt->execute();
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($row) {
+            $pictureFile = !empty($row['picture']) ? $row['picture'] : 'default.png';
+            $picturePath = "../assets/uploads/" . $pictureFile;
+
+            // Check if the file exists, otherwise fallback to default
+            if (!file_exists($picturePath)) {
+                $pictureFile = 'default.png';
+            }
+
             $student = [
                 'student_name' => $row['student_name'],
                 'school_student_id' => $row['school_student_id'],
-                'picture' => !empty($row['picture']) ? "../assets/uploads/" . $row['picture'] : '../assets/uploads/default.png',
+                'picture' => $pictureFile,
             ];
         }
     } catch (PDOException $e) {
@@ -38,7 +46,7 @@ if ($user_id) {
 <!--=============== HEADER ===============-->
 <header class="header" id="header"> 
     <div class="header-container">
-        <a href="" class="header-logo" id="header-logo">
+        <a href="#" class="header-logo" id="header-logo">
             <i class="bi bi-person-lock"></i>
             <span>Student</span>
         </a>
@@ -73,15 +81,13 @@ if ($user_id) {
                 </a>
             </div>
 
-            <!--=======  My Attendance ======-->
             <div class="sidebar-list">
-                <a href="my-attendance.php" class="sidebar-link">
-                    <i class="bi bi-person"></i>
-                    <span>My Attendance</span>
+                <a href="course-attendance.php" class="sidebar-link">
+                    <i class="bi bi-clipboard2-data"></i>
+                    <span>Course & Attendance</span>
                 </a>
             </div>
 
-            <!--=======  Profile ======-->
             <div class="sidebar-list">
                 <a href="profile.php" class="sidebar-link">
                     <i class="bi bi-person-circle"></i>

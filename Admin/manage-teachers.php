@@ -17,7 +17,7 @@ if ($_SESSION['role'] !== 'admin') {
 }
 
 // Fetch assigned courses and join with teachers & courses tables
-$sql = "SELECT ac.assigned_course_id, t.full_name, t.user_id, t.school_id, c.course_name, c.section, ac.assigned_at, ac.course_id
+$sql = "SELECT ac.assigned_course_id, t.full_name, t.user_id, t.school_user_id, c.course_name, c.section, ac.assigned_at, ac.course_id
         FROM assigned_courses AS ac
         JOIN users AS t ON ac.user_id = t.user_id
         JOIN courses AS c ON ac.course_id = c.course_id
@@ -44,7 +44,7 @@ $selectedCourseId = $selectedSection = $reassignId = '';
 if (isset($_GET['reassign_id'])) {
     $reassignId = filter_input(INPUT_GET, 'reassign_id', FILTER_SANITIZE_NUMBER_INT);
     
-    // FIX: Join with `courses` table to fetch `section` properly
+    //  Join with `courses` table to fetch `section` properly
     $stmt = $conn->prepare("
         SELECT ac.course_id, c.section 
         FROM assigned_courses ac
@@ -157,11 +157,12 @@ if (isset($_GET['reassign_id'])) {
         </div>  
 
         <div class="assigned-course-container">
-        
-            <h2 class="mb-0 text-center">List of Assigned Courses</h2>
+            <div class="mb-0">
+                <h2 class="text-center">List of Assigned Courses</h2>
+            </div>
 
             <!-- Search Bar -->     
-            <div class="search-wrapper">
+            <div class="search-wrapper my-3">
                 <input type="text" id="search-assigned" placeholder="Search..." class="search-input">
             </div>
 
@@ -188,10 +189,15 @@ if (isset($_GET['reassign_id'])) {
                                 <tr data-assigned-course-id="<?php echo $assigned_course['assigned_course_id']; ?>">
                                     <td><?php echo htmlspecialchars($assigned_course['assigned_course_id']); ?></td>
                                     <td><?php echo htmlspecialchars($assigned_course['full_name']); ?></td>
-                                    <td><?php echo htmlspecialchars($assigned_course['school_id']); ?></td>
+                                    <td><?php echo htmlspecialchars($assigned_course['school_user_id']); ?></td>
                                     <td><?php echo htmlspecialchars($assigned_course['course_name']); ?></td>
                                     <td><?php echo htmlspecialchars($assigned_course['section']); ?></td>
-                                    <td><?php echo htmlspecialchars($assigned_course['assigned_at']); ?></td>
+                                    <td>
+                                        <?php
+                                            $assignedAt = new DateTime($assigned_course['assigned_at']);
+                                            echo htmlspecialchars($assignedAt->format('Y-m-d g:i A'));
+                                        ?>
+                                    </td>
                                     <td>
                                         <div class="d-flex gap-2">
                                             <a href="?reassign_id=<?php echo htmlspecialchars($assigned_course['assigned_course_id']); ?>" class="btn btn-warning btn-sm">Reassign</a>
@@ -220,14 +226,19 @@ if (isset($_GET['reassign_id'])) {
     <script src="../assets/js/admin.js"></script>
 
     <!-- Bootstrap JS and Popper.js -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+    <script src="../assets/js/popper.min.js"></script>
+    <!--<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>-->
+    
+    <script src="../assets/js/bootstrap.min.js"></script>
+    <!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>-->
 
-    <!-- Include jQuery (required for Select2) -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-    <!-- Include Select2 JS -->
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+    <!-- Include jQuery and Select2 JS -->
+    <script src="../assets/js/jquery.min.js"></script>
+    <!--<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>-->
+    
+    <script src="../assets/js/select2.min.js"></script>
+    <!--<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>-->
 
     <script>
     $(document).ready(function() {

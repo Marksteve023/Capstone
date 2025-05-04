@@ -1,8 +1,8 @@
 /* ==============================
-MAIN DASHBOARD STYLING
-============================== */
+   MAIN DASHBOARD STYLING
+==============================
 
-/* Dashboard cards grid layout */
+/ Dashboard cards grid layout /
 .dashboard-cards {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -12,7 +12,7 @@ MAIN DASHBOARD STYLING
     align-items: center;
 }
 
-/* Individual dashboard card style */
+/ Individual dashboard card style /
 .dashboard-card {
     background-color: var(--body-color);
     border-radius: 10px;
@@ -23,17 +23,17 @@ MAIN DASHBOARD STYLING
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    text-align: center; 
+    text-align: center;
     border: 1px solid var(--title-color);
 }
 
-/* Hover effect on dashboard cards */
+/ Hover effect for dashboard card /
 .dashboard-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 }
 
-/* Card title */
+/ Dashboard card heading style /
 .dashboard-card h2 {
     font-size: 1.8rem;
     font-weight: 600;
@@ -41,30 +41,49 @@ MAIN DASHBOARD STYLING
     margin-bottom: 1rem;
 }
 
-/* Card paragraph */
+/ Dashboard card paragraph style /
 .dashboard-card p {
     font-size: 1rem;
     color: var(--title-color);
     margin: 0;
 }
+*/
 
-/* ========
-    MODAL 
-=========== */
+/* ==============================
+COURSE & MASTERLIST
+============================== */
+
+#courseMastelistCard {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+#courseMastelistCard:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+    cursor: pointer;
+}
+
+/* =============
+MODALS & TABLES
+================ */
+.modal-custom {
+    max-width: 95%;
+    width: 95%;
+}
+
 .table-responsive {
     max-height: 60vh;
     overflow-y: auto;
     margin-bottom: 2rem;
 }
-.modal-custom{
-    max-width: 95%;
-    width: 95%;
-}
+
 .custom-btn {
-    margin-right: 15px; /* Adjust as needed */
+    margin-right: 15px;
 }
 
-
+/* ===============
+PROFILE CONTAINER
+================== */
 #profile-container {
     background-color: var(--body-color);    
     box-shadow: var(--box-shadow);
@@ -73,18 +92,125 @@ MAIN DASHBOARD STYLING
     color: var(--title-color);
 }
 
-.attendance-records{
-    margin-top: 3rem;
+/* ================
+ATTENDANCE RECORDS
+===================*/
+.attendance-records {
+    margin: 3rem auto 2rem auto;
     min-width: 350px;
+    padding: 1rem;
+    background-color: var(--body-color);
+    border-radius: 10px;
+    box-shadow: var(--box-shadow);
+    height: 550px;
+    border: 1px solid var(--title-color);
+}
+
+#attendanceRecordsHeader {
+    margin-bottom: 1.5rem;
+}
+
+/* =====================
+ATTENDANCE REPORT CHART
+======================== */
+.chart-container,
+.studentChart-container {
+    margin: 2rem auto 3rem auto;
+    background-color: var(--body-color);
+    box-shadow: var(--box-shadow);
+    border: 1px solid var(--title-color);
+    border-radius: 10px;
+    color: var(--title-color);
+    padding: 1rem;
+    width: 100%;
+    max-width: 1000px; 
+    text-align: center;
+}
+.title-chart h2, h6{
+    color: var(--title-color);
+}
+
+/* Flex layout for chart cards */
+.chart-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+}
+
+/* Individual chart card */
+.chart-card {
+    flex: 1 1 45%;
+    max-width: 450px;
+    min-width: 300px;
+    background-color: var(--body-color);
+    border: 1px solid var(--title-color);
+    border-radius: 10px;
+    padding: 1rem;
+    box-shadow: var(--box-shadow);
+}
+
+/* Canvas sizing inside chart cards */
+.chart-card canvas {
+    width: 100% !important;
+    height: auto !important;
+    display: block;
+    margin: 0 auto;
+}
+
+/* ===============
+ATTENDANCE REPORT
+==================*/
+.attendance-report {
+    margin: 3rem auto 1rem auto;
+    min-width: 450px;
     padding: 1rem;
     background-color: var(--body-color);
     border-radius: 10px;
     box-shadow: var(--box-shadow);
     height: 600px;
     border: 1px solid var(--title-color);
-    margin-bottom: 2rem;
 }
 
-#attendanceRecordsHeader {
-    margin-bottom: 1.5rem;
+/* ==========
+SEARCH INPUT
+============= */
+.search-wrapper-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+}
+
+.search-input {
+    width: 80%;
+    padding: 10px;
+    font-size: 1rem;
+    border-radius: 5px;
+    outline: none;
+    background-color: var(--body-color);
+    border: 1px solid var(--title-color);
+    color: var(--text-color);
+}
+
+.search-input:focus {
+    border-color: #6268f1;
+    outline: none;
+}
+
+/* ============
+BADGE STYLING
+===============*/
+.badge.bg-purple {
+    background-color: #6f42c1 !important; 
+    color: #ffffff !important; 
+}
+
+
+@media (max-width: 768px) {
+    .studentChart-container {
+        width: 90%;
+        height: auto;
+    }
 }

@@ -2,7 +2,7 @@
 session_start();
 require_once '../config/db.php';
 
-// Debugging: Check if session exists
+
 if (!isset($_SESSION['email']) || empty($_SESSION['role'])) {
     echo "Session expired or not set!";
     header("Location: ../login.php");
@@ -50,47 +50,6 @@ $conn = null;
     <!-- Main Content -->
     <main class="main" id="main">
         <h1>Dashboard</h1>
-        <!--<div class="dashboard-cards">
-
-        <div class="dashboard-card">
-                <h2><?php echo htmlspecialchars($students_count); ?></h2>
-                <p>Students</p>
-            </div>
-            <div class="dashboard-card">
-                <h2><?php echo htmlspecialchars($teachers_count); ?></h2>
-                <p>Teachers</p>
-            </div>
-            <div class="dashboard-card">
-                <h2><?php echo htmlspecialchars($courses_count); ?></h2>
-                <p>Courses</p>
-            </div>
-        </div>
-        <div class="row g-4">
-            <div class="col-md-2">
-                <div class="card text-white bg-primary shadow-sm">
-                    <div class="card-body text-center">
-                    <h2><?php echo htmlspecialchars($students_count); ?></h2>
-                        <p class="fw-bold">Students</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-2">
-                <div class="card text-white bg-success shadow-sm">
-                    <div class="card-body text-center">
-                        <h2><?php echo htmlspecialchars($courses_count); ?></h2>
-                        <p class="fw-bold">Teachers</p>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-2">
-                <div class="card text-white bg-warning shadow-sm">
-                    <div class="card-body text-center">
-                        <h2><?php echo htmlspecialchars($students_count); ?></h2>
-                        <p class="fw-bold">Courses</p>
-                    </div>
-                </div>
-            </div>
-        </div>-->
 
         <div class="container mt-4">
 
@@ -106,7 +65,7 @@ $conn = null;
             <div class="col-md-4">
                 <div class="card text-white bg-success shadow-sm">
                     <div class="card-body text-center">
-                    <h2><?php echo htmlspecialchars($courses_count); ?></h2>
+                    <h2><?php echo htmlspecialchars($teachers_count); ?></h2>
                         <p class="fw-bold">Teachers</p>
                     </div>
                 </div>
@@ -122,10 +81,16 @@ $conn = null;
         </div>
     </div>
     </main>
-
+    <!--=============== MAIN JS ===============-->
     <script src="../assets/js/global.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="../assets/js/popper.min.js"></script>
+    <!--<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>-->
+    
+    <script src="../assets/js/bootstrap.min.js"></script>
+    <!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>-->
+
 
 </body>
 </html>

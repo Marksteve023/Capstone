@@ -78,7 +78,7 @@ try {
                         </div>
 
                         <div class="mb-3">
-                            <label for="section" class="form-label">Course Section</label>
+                            <label for="section" class="form-label">Section</label>
                             <input type="text" class="form-control" id="section" name="section" value="<?php echo htmlspecialchars($edit_course['section'] ?? ''); ?>" required>
                         </div>
 
@@ -91,10 +91,33 @@ try {
                                 <option value="3rd Trimester" <?php echo $edit_course && $edit_course['semester'] === '3rd Trimester' ? 'selected' : ''; ?>>3rd Trimester</option>
                             </select>
                         </div>
+
                         <div class="mb-3">
                             <label for="academic_year" class="form-label">Academic Year</label>
-                            <input type="text" class="form-control" id="academic_year" name="academic_year" value="<?php echo htmlspecialchars($edit_course['academic_year'] ?? ''); ?>" required>
+                            <select class="form-select" id="academic_year" name="academic_year" required>
+                                <option value="">--- Select Academic Year ---</option>
+                                <?php
+                                    $currentMonth = date('n');
+                                    $currentYear = date('Y');
+
+                                    // Trimester system: academic year starts in June
+                                    $activeStartYear = ($currentMonth < 6) ? $currentYear - 1 : $currentYear;
+                                    $activeAY = "$activeStartYear-" . ($activeStartYear + 1);
+
+                                    // Generate 5 academic years, future-first
+                                    for ($i = 4; $i >= 0; $i--) {
+                                        $start = $activeStartYear + $i;
+                                        $end = $start + 1;
+                                        $val = "$start-$end";
+                                        $selected = ($val === $activeAY) ? 'selected' : '';
+                                        echo "<option value='$val' $selected>$val</option>";
+                                    }
+                                ?>
+
+                            </select>
                         </div>
+
+
                         <div class="mb-3 d-flex justify-content-center">
                             <button type="submit" class="btn btn-primary w-50"><?php echo $edit_course ? 'Update' : 'Save'; ?></button>
                         </div>
@@ -124,10 +147,12 @@ try {
                     
         <div class="course-list-container">
 
-            <h2 class="mb-0 text-center">List of Courses</h2>
+        <div class="mb-0">
+            <h2 class="text-center">List of Courses</h2>
+        </div>
 
             <!-- Search Bar --> 
-            <div class="search-wrapper">
+            <div class="search-wrapper my-3">
                 <input type="text" id="search-course" placeholder="Search by Course Name, Section, Semester, Academic Year" class="search-input">
             </div>
 
@@ -159,7 +184,12 @@ try {
                                     <td><?php echo htmlspecialchars($course['semester']); ?></td>
                                     <td><?php echo htmlspecialchars($course['academic_year']); ?></td>
                                     <td><?php echo htmlspecialchars($course['full_name'] ?? 'Unassigned'); ?></td>
-                                    <td><?php echo date("Y-m-d H:i:s", strtotime($course['created_at'])); ?></td>
+                                    <td>
+                                        <?php
+                                            $createdAt = new DateTime($course['created_at']);
+                                            echo htmlspecialchars($createdAt->format('Y-m-d g:i A'));
+                                        ?>
+                                    </td>
                                     <td>
 
                                         <div class="d-flex gap-2">
@@ -184,9 +214,14 @@ try {
     <script src="../assets/js/global.js"></script>
     <script src="../assets/js/admin.js"></script>
 
+
     <!-- Bootstrap JS and Popper.js -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+    <script src="../assets/js/popper.min.js"></script>
+    <!--<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>-->
+    
+    
+    <script src="../assets/js/bootstrap.min.js"></script>
+    <!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>-->
 
 
     <script>

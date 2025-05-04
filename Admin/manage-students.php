@@ -42,6 +42,9 @@ if (isset($_GET['id']) && filter_var($_GET['id'], FILTER_VALIDATE_INT)) {
         $_SESSION['error'] = "Database error: " . $e->getMessage();
     }
 }
+
+$student_name = htmlspecialchars($edit_student['student_name'] ?? '');
+$email = htmlspecialchars($edit_student['email'] ?? '');
 ?>
 
 
@@ -79,22 +82,42 @@ if (isset($_GET['id']) && filter_var($_GET['id'], FILTER_VALIDATE_INT)) {
 
                                 <div class="mb-3">
                                     <label for="student_name" class="form-label">Student Name</label>
-                                    <input type="text" class="form-control" id="student_name" name="student_name" required value="<?= htmlspecialchars($edit_student['student_name'] ?? '') ?>">
+                                    <input type="text" class="form-control" id="student_name" name="student_name" required value="<?= $student_name ?>">
                                 </div>
 
                                 <div class="mb-3">
+                                    <label for="email" class="form-label">Email</label>
+                                    <input type="email" class="form-control" id="email" name="email"
+                                        placeholder="example@gmail.com" required
+                                        value="<?= $email ?>">
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="password">Password</label>
+                                    <input type="password" class="form-control" id="password" name="password" placeholder="Must be at least 8 characters." minlength="8" <?= !$edit_student ? 'required' : ''; ?>>
+                                </div>
+
+                            </div>
+
+                            <div class="col-md-6">
+
+                            <div class="mb-3">
                                     <label for="rfid_tag">RFID</label>
-                                    <input type="text" class="form-control" id="rfid_tag" name="rfid_tag" required value="<?= htmlspecialchars($edit_student['rfid_tag'] ?? '') ?>">
+                                    <input type="text" class="form-control" id="rfid_tag" name="rfid_tag"    value="<?= htmlspecialchars($edit_student['rfid_tag'] ?? '') ?>">
                                 </div>
 
 
                                 <div class="mb-3">
                                     <label for="program">Academic Program</label>
-                                    <input type="text" class="form-control" id="program" name="program" required value="<?= htmlspecialchars($edit_student['program'] ?? '') ?>">
+                                    <select class="form-select select2" name="program" id="program" required>
+                                        <option value="" disabled <?= !$edit_student ? 'selected' : ''; ?>>--- Select Program ---</option>
+                                        <option value="ACT" <?= ($edit_student && $edit_student['program'] == 'ACT') ? 'selected' : ''; ?>>Associate in Computer Technology</option>
+                                        <option value="BSCS" <?= ($edit_student && $edit_student['program'] == 'BSCS') ? 'selected' : ''; ?>>BS in Computer Science</option>
+                                        <option value="BSIT" <?= ($edit_student && $edit_student['program'] == 'BSIT') ? 'selected' : ''; ?>>BS in Information Technology</option>
+                                        <option value="BSIS" <?= ($edit_student && $edit_student['program'] == 'BSIS') ? 'selected' : ''; ?>>BS in Information System</option>
+                                    </select>
                                 </div>
-                            </div>
 
-                            <div class="col-md-6">
                                 <div class="mb-3">
                                     <label for="year_level" class="form-label">Year Level</label>
                                     <select class="form-select select2" name="year_level" id="year_level" required>
@@ -104,11 +127,6 @@ if (isset($_GET['id']) && filter_var($_GET['id'], FILTER_VALIDATE_INT)) {
                                         <option value="3rd Year" <?php echo ($edit_student && $edit_student['year_level'] == '3rd Year') ? 'selected' : ''; ?>>3rd Year</option>
                                         <option value="4th Year" <?php echo ($edit_student && $edit_student['year_level'] == '4th Year') ? 'selected' : ''; ?>>4th Year</option>
                                     </select>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="password">Password</label>
-                                    <input type="password" class="form-control" id="password" name="password" placeholder="Must be at least 8 characters." minlength="8" <?= !$edit_student ? 'required' : ''; ?>>
                                 </div>
 
                                 <div class="mb-3">
@@ -147,10 +165,12 @@ if (isset($_GET['id']) && filter_var($_GET['id'], FILTER_VALIDATE_INT)) {
 
         <div class="student-container">
 
-            <h2 class="mb-0 text-center">Student Record</h2>
+            <div class="mb-0">
+                <h2 class="text-center">Student Record</h2>
+            </div>
          
             <!-- Search Bar -->     
-            <div class="search-wrapper">
+            <div class="search-wrapper my-3">
                 <input type="text" id="search-student" placeholder="Search by Name, School ID, Program" class="search-input">
             </div>
             <div class="table-wrapper">
@@ -162,6 +182,7 @@ if (isset($_GET['id']) && filter_var($_GET['id'], FILTER_VALIDATE_INT)) {
                             <th>Picture</th>
                             <th>School ID</th>
                             <th>Student Name</th>
+                            <th>Email</th>
                             <th>RFID</th>
                             <th>Academic Program</th>
                             <th>Year Level</th>
@@ -172,11 +193,11 @@ if (isset($_GET['id']) && filter_var($_GET['id'], FILTER_VALIDATE_INT)) {
                     <tbody  class="student-list">
                        <?php if (empty($students)): ?>
                             <tr>
-                                <td colspan="9" style="text-align: center; font-weight: bold;">No Student Records found.</td>
+                                <td colspan="10" style="text-align: center; font-weight: bold;">No Student Records found.</td>
                             </tr>
                         <?php else: ?>
                             <?php foreach ($students as $index => $student): ?>
-                                <tr data-student-id="<?php echo htmlspecialchars(string: $student['student_id']);?>">
+                                <tr data-student-id="<?php echo htmlspecialchars($student['student_id']);?>">
                                     <td><?php echo htmlspecialchars($index + 1); ?></td>
                                     <td>
                                         <img src="<?php echo !empty($student['picture']) ? '../assets/uploads/' . htmlspecialchars($student['picture']) : '../uploads/default.png'; ?>"
@@ -184,10 +205,17 @@ if (isset($_GET['id']) && filter_var($_GET['id'], FILTER_VALIDATE_INT)) {
                                     </td>
                                     <td><?php echo htmlspecialchars($student['school_student_id']);?></td>
                                     <td><?php echo htmlspecialchars($student['student_name']);?></td>
+                                    <td><?php echo htmlspecialchars($student['email']); ?></td>
                                     <td><?php echo htmlspecialchars($student['rfid_tag']);?></td>
                                     <td><?php echo htmlspecialchars($student['program']);?></td>
                                     <td><?php echo htmlspecialchars($student['year_level']);?></td>
-                                    <td><?php echo htmlspecialchars($student['created_at']) ?></td>
+                                    <td>
+                                        <?php
+                                            $createdAt = new DateTime($student['created_at']);
+                                            echo htmlspecialchars($createdAt->format('Y-m-d g:i A'));
+                                        ?>
+                                    </td>
+
                                     <td>
                                         <div class="d-flex gap-2">
                                             <a href="?id=<?php echo htmlspecialchars(string: $student['student_id']);?>"   
@@ -213,52 +241,74 @@ if (isset($_GET['id']) && filter_var($_GET['id'], FILTER_VALIDATE_INT)) {
 
 
 
-     <!--=============== MAIN JS ===============-->
-        <script src="../assets/js/global.js"></script>
-        <script src="../assets/js/admin.js"></script>
+    <!--=============== MAIN JS ===============-->
+    <script src="../assets/js/global.js"></script>
+    <script src="../assets/js/admin.js"></script>
 
-        <!-- Bootstrap JS and Popper.js -->
-        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="../assets/js/popper.min.js"></script>
+    <!--<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>-->
+    
+    <script src="../assets/js/bootstrap.min.js"></script>
+    <!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>-->
 
-        <script>
 
-            
-          // Search Function
-            document.getElementById('search-student').addEventListener('input', function () {
-                const query = this.value.trim().toLowerCase();
-                document.querySelectorAll('.table tbody tr').forEach(row => {
-                    const text = Array.from(row.getElementsByTagName('td')).map(td => td.textContent.trim().toLowerCase()).join(' ');
-                    row.style.display = text.includes(query) ? '' : 'none';
+    <script>
+
+        // Search Function
+        document.getElementById('search-student').addEventListener('input', function () {
+            const query = this.value.trim().toLowerCase();
+            document.querySelectorAll('.table tbody tr').forEach(row => {
+                const text = Array.from(row.getElementsByTagName('td')).map(td => td.textContent.trim().toLowerCase()).join(' ');
+                row.style.display = text.includes(query) ? '' : 'none';
+            });
+        });
+
+        // Ensure Messages Fade Out After Page Load
+        document.addEventListener("DOMContentLoaded", () => {
+            setTimeout(() => {
+                document.querySelectorAll(".alert").forEach(alert => {
+                    alert.classList.add("fade"); // Add fade class
+                    alert.style.transition = "opacity 0.5s ease-out"; 
+                    alert.style.opacity = "0"; 
+
+                    setTimeout(() => alert.remove(), 500); // Remove after fading
                 });
-            });
-            // Ensure Messages Fade Out After Page Load
-            document.addEventListener("DOMContentLoaded", () => {
-                setTimeout(() => {
-                    document.querySelectorAll(".alert").forEach(alert => {
-                        alert.classList.add("fade"); // Add fade class
-                        alert.style.transition = "opacity 0.5s ease-out"; 
-                        alert.style.opacity = "0"; 
-
-                        setTimeout(() => alert.remove(), 500); // Remove after fading
-                    });
-                }, 3000);
-            });
-        </script>
+            }, 3000);
+        });
+    </script>
 
 <script>
-    document.getElementById('rfid_tag').addEventListener('input', function(event) {
-        // Automatically capture the scanned RFID
-        let rfidInput = event.target.value;
-        
-        // Here you can add any logic to handle the RFID (e.g., ensure it's the correct format)
-        console.log("Scanned RFID:", rfidInput);
+    // Create a WebSocket connection
+    const socket = new WebSocket('ws://localhost:9000');
+    
+    // When the connection is open
+    socket.addEventListener('open', function(event) {
+        console.log('WebSocket connected to RFID server');
+
+        // Set the mode to 'assign' when the connection is established
+        socket.send(JSON.stringify({ type: 'set_mode', mode: 'assign' }));
     });
 
-    // You can also trigger the event after the tag is scanned if you want to add more logic
-    function onRFIDScan(rfid) {
-        document.getElementById('rfid_tag').value = rfid;
-    }
+    // Listen for messages from the WebSocket server
+    socket.addEventListener('message', function(event) {
+        try {
+            const data = JSON.parse(event.data);
+
+            // Only update the RFID input if it's an assignment RFID
+            if (data.type === 'assign_rfid' && data.rfid) {
+                document.getElementById('rfid_tag').value = data.rfid;
+                console.log("Assigned RFID received:", data.rfid);
+            }
+        } catch (error) {
+            console.error('Error parsing message:', error);
+        }
+    });
+
+    // Optional: Listen for manual input (like testing RFID input manually)
+    document.getElementById('rfid_tag').addEventListener('input', function(event) {
+        console.log("Manual RFID input:", event.target.value);
+    });
 </script>
 
 </body>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WebSocket Test</title>
+  <style>
+    #messages { margin-top: 20px; }
+    .message { margin: 5px 0; }
+  </style>
+</head>
+<body>
+  <h1>WebSocket Test Client</h1>
+
+  <button id="sendMessageButton">Send Message to Server</button>
+
+  <div id="messages"></div>
+
+  <script>
+    // Connect to the WebSocket server
+    const socket = new WebSocket('ws://localhost:9000');
+
+    // When the WebSocket connection is open
+    socket.addEventListener('open', () => {
+      console.log('Connected to WebSocket server');
+      // Display a message on the webpage
+      document.getElementById('messages').innerHTML += '<div class="message">Connected to WebSocket server</div>';
+    });
+
+    // When a message is received from the WebSocket server
+    socket.addEventListener('message', (event) => {
+      console.log('Received message:', event.data);
+      const message = JSON.parse(event.data);
+      document.getElementById('messages').innerHTML += `<div class="message">Received: ${message.message}</div>`;
+    });
+
+    // When the "Send Message" button is clicked
+    document.getElementById('sendMessageButton').addEventListener('click', () => {
+      const message = { message: 'Hello from the client!' };
+      console.log('Sending message to server:', message);
+      socket.send(JSON.stringify(message)); // Send the message to the WebSocket server
+    });
+  </script>
+</body>
+</html>

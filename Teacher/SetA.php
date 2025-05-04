@@ -52,7 +52,9 @@
             <?php endforeach; ?>
         </tbody>
     </table>
-    <button class="btn btn-success mt-3" id="SetADownload">Download SET A</button>
+    <div class="modal-footer">
+        <button class="btn btn-success mt-3" id="SetADownload">Download SET A</button>
+    </div>
 </div>
 
 <script>

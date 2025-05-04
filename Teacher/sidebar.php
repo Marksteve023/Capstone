@@ -108,7 +108,7 @@ if ($user_id) {
 
             <!--=======  Manage User ======-->
             <div class="sidebar-list">
-                <a href="reports.php" class="sidebar-link">
+                <a href="attendance-reports.php" class="sidebar-link">
                     <i class="bi bi-file-bar-graph"></i>
                     <span>Reports</span>
                 </a>

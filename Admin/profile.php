@@ -47,7 +47,7 @@ try {
     <!-- Main Content -->
     <main class="main" id="main">
         <h1>Profile</h1>
-        <div class="container-fluid">
+        <div class="container mt-4">
             <div class="row justify-content-center pt-4 mb-4">
                 <div class="col-md-6 col-lg-5 p-4 rounded shadow" id="profile-container">
                     <h2 class="text-center">Edit Profile</h2>
@@ -65,11 +65,12 @@ try {
                                 ✏️
                             </button>
                         </div>
-                        <input type="file" id="fileInput" name="profile_picture" accept="image/*" class="d-none">
                     </div>
 
                     <form action="../Admin/scripts/update_profile.php" method="POST" enctype="multipart/form-data" class="mt-3">
                         <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
+
+                        <input type="file" id="fileInput" name="profile_picture" accept="image/*" class="d-none">
 
                         <div class="mb-3">
                             <label for="full_name" class="form-label">Full Name:</label>
@@ -85,12 +86,12 @@ try {
 
                         <div class="mb-3">
                             <label for="old_password" class="form-label">Old Password:</label>
-                            <input type="password" id="old_password" name="old_password" class="form-control">
+                            <input type="password" id="old_password" name="old_password" class="form-control" placeholder="Password must be at least 8 characters." minlength="8">
                         </div>
 
                         <div class="mb-3">
                             <label for="password" class="form-label">New Password:</label>
-                            <input type="password" id="password" name="password" class="form-control" placeholder="Leave blank to keep current password">
+                            <input type="password" id="password" name="password" class="form-control" placeholder="Leave blank to keep current password" placeholder="Password must be at least 8 characters." minlength="8">
                         </div>
 
                         <div class="d-flex justify-content-center">
@@ -118,31 +119,31 @@ try {
             </div>
         </div>
     </main>
-
+    <!--=============== MAIN JS ===============-->
     <script src="../assets/js/global.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+    
+    <!-- Bootstrap JS and Popper.js -->
+    <script src="../assets/js/popper.min.js"></script>
+    <!--<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>-->
+    
+    <script src="../assets/js/bootstrap.min.js"></script>
+    <!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>-->
+
    
     <script>
-        document.getElementById("fileInput").addEventListener("change", function () {
-        let formData = new FormData();
-        formData.append("profile_picture", this.files[0]);
-        
-        let xhr = new XMLHttpRequest();
-        xhr.open("POST", "../Teacher/scripts/upload_profile_picture.php", true);
-        
-        xhr.onload = function () {
-            if (xhr.status === 200) {
-                let response = JSON.parse(xhr.responseText);
-                if (response.status === "success") {
-                    document.getElementById("profilePic").src = "../assets/uploads/" + response.file_name;
-                }
-            }
-        };
-        
-        xhr.send(formData);
-    });
 
+        // When a new file is selected, show preview
+        document.getElementById('fileInput').addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('profilePic').src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+        
         // Ensure Messages Fade Out After Page Load
         document.addEventListener("DOMContentLoaded", () => {
         setTimeout(() => {

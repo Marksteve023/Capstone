@@ -6,7 +6,7 @@ include '../../config/db.php';
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     try {
         // Sanitize and validate input data
-        $school_id = htmlspecialchars($_POST['school_id']);
+        $school_user_id = htmlspecialchars($_POST['school_user_id']);
         $full_name = htmlspecialchars($_POST['full_name']);
         $role = htmlspecialchars($_POST['role']);
 
@@ -31,10 +31,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $hashed_password = password_hash($password, PASSWORD_BCRYPT);
         }
 
-        // Handle file upload (only if the user is uploading a new picture)
-        // Use the current picture if none is uploaded
-        $picture = isset($_POST['current_picture']) ? $_POST['current_picture'] : "default.png";
-        
+        // Default picture fallback
+        $picture = isset($_POST['current_picture']) && $_POST['current_picture'] !== ''
+            ? $_POST['current_picture']
+            : "default.png";
+
         if (isset($_FILES['picture']) && $_FILES['picture']['error'] == 0) {
             $allowed_extensions = ['jpg', 'jpeg', 'png'];
             $file_extension = strtolower(pathinfo($_FILES['picture']['name'], PATHINFO_EXTENSION));
@@ -76,7 +77,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             // Check if any changes were made
             $has_changes = false;
-            if ($current_user['school_id'] !== $school_id || 
+            if ($current_user['school_user_id'] !== $school_user_id || 
                 $current_user['full_name'] !== $full_name || 
                 $current_user['role'] !== $role || 
                 $current_user['email'] !== $email || 
@@ -88,11 +89,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if ($has_changes) {
                 // Ensure no duplicate user exists (excluding the current one)
                 $sql = "SELECT * FROM users
-                        WHERE school_id = :school_id AND full_name = :full_name AND role = :role 
+                        WHERE school_user_id = :school_user_id AND full_name = :full_name AND role = :role 
                         AND email = :email AND user_id != :user_id";
                 $stmt = $conn->prepare($sql);
                 $stmt->execute([ 
-                    ':school_id' => $school_id,
+                    ':school_user_id' => $school_user_id,
                     ':full_name' => $full_name,
                     ':role' => $role,
                     ':email' => $email,
@@ -106,13 +107,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
 
                 // Update user details
-                $sql = "UPDATE users SET school_id = :school_id, full_name = :full_name, role = :role, 
+                $sql = "UPDATE users SET school_user_id = :school_user_id, full_name = :full_name, role = :role, 
                         email = :email, picture = :picture" . ($hashed_password ? ", password = :password" : "") .  
                         " WHERE user_id = :user_id";
 
                 $stmt = $conn->prepare($sql);
                 $params = [
-                    ':school_id' => $school_id,
+                    ':school_user_id' => $school_user_id,
                     ':full_name' => $full_name,
                     ':role' => $role,
                     ':email' => $email,
@@ -131,11 +132,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } else {
             // Check if the user already exists
             $sql = "SELECT * FROM users
-                    WHERE school_id = :school_id AND full_name = :full_name AND role = :role 
+                    WHERE school_user_id = :school_user_id AND full_name = :full_name AND role = :role 
                     AND email = :email";
             $stmt = $conn->prepare($sql);
             $stmt->execute([
-                ':school_id' => $school_id,
+                ':school_user_id' => $school_user_id,
                 ':full_name' => $full_name,
                 ':role' => $role,
                 ':email' => $email
@@ -148,11 +149,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
 
             // Insert new user
-            $sql = "INSERT INTO users (school_id, full_name, role, email, password, picture) 
-                    VALUES (:school_id, :full_name, :role, :email, :password, :picture)";
+            $sql = "INSERT INTO users (school_user_id, full_name, role, email, password, picture) 
+                    VALUES (:school_user_id, :full_name, :role, :email, :password, :picture)";
             $stmt = $conn->prepare($sql);
             $stmt->execute([
-                ':school_id' => $school_id,
+                ':school_user_id' => $school_user_id,
                 ':full_name' => $full_name,
                 ':role' => $role,
                 ':email' => $email,

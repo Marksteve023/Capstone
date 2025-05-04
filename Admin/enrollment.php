@@ -118,7 +118,7 @@ if ($_SESSION['role'] !== 'admin') {
                             <div class="col-md-6">
                                     <div class="mb-3">
                                         <label for="section" class="form-label">Section</label>
-                                        <select class="form-select select2" name="section" id="section" onchange="updateSection()">
+                                        <select class="form-select select2" name="section" id="section" onchange="updateSection()" required>
                                             <option value="" disabled <?= empty($selectedSection) ? 'selected' : '' ?>>Select Section</option>
                                             <?php foreach ($sectionOptions as $section) : ?>
                                                 <option value="<?php echo htmlspecialchars($section['section']); ?>"
@@ -131,7 +131,7 @@ if ($_SESSION['role'] !== 'admin') {
 
                                 <div class="mb-3">
                                     <label for="course_id" class="form-label">Courses</label>
-                                    <select class="form-select select2-multiple select2" id="course_id" name="course_id[]" multiple>
+                                    <select class="form-select select2-multiple select2" id="course_id" name="course_id[]" required  multiple>
                                     <?php foreach ($courseOptions as $course) : ?>
                                             <option value="<?php echo htmlspecialchars($course['course_id']) ?>" data-section="<?= htmlspecialchars($course['section']) ?>">
                                                 <?php echo htmlspecialchars($course['course_name'] . ' - ' . $course['section']) ?>
@@ -171,11 +171,13 @@ if ($_SESSION['role'] !== 'admin') {
         </div>
 
         <div class="student-enrollment-container">
-            <h2 class="mb-0 text-center">
-                Student Enrollment List
-            </h2>
+            <div class="mb-0">
+                <h2 class="text-center">
+                    Student Enrollment List
+                </h2>
+            </div>
 
-            <div class="search-wrapper">
+            <div class="search-wrapper my-3">
                 <input type="text" id="search-enrolled" placeholder="Search by Name, School ID," class="search-input">
             </div>
 
@@ -190,7 +192,7 @@ if ($_SESSION['role'] !== 'admin') {
                             <th>Section</th>
                             <th>Course</th>
                             <th>academic Year</th>
-                            <th>Created At</th>
+                            <th>Enrolled At</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
@@ -208,7 +210,13 @@ if ($_SESSION['role'] !== 'admin') {
                                     <td><?php echo htmlspecialchars($enrolled['section']); ?></td>
                                     <td><?php echo htmlspecialchars($enrolled['course_name']); ?></td>
                                     <td><?php echo htmlspecialchars($enrolled['academic_year']); ?></td>
-                                    <td><?php echo htmlspecialchars($enrolled['enrolled_at']); ?></td>
+                                    
+                                    <td>
+                                        <?php
+                                            $createdAt = new DateTime($enrolled['enrolled_at']);
+                                            echo htmlspecialchars($createdAt->format('Y-m-d g:i A'));
+                                        ?>
+                                    </td>
                                     <td>
                                     <div class="d-flex gap-2">
                                         <a href="?re_enroll_id=<?php echo htmlspecialchars($enrolled['student_course_id']); ?>" 
@@ -238,12 +246,18 @@ if ($_SESSION['role'] !== 'admin') {
     <script src="../assets/js/admin.js"></script>
 
     <!-- Bootstrap JS and Popper.js -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>
+    <script src="../assets/js/popper.min.js"></script>
+    <!--<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>-->
+    
+    <script src="../assets/js/bootstrap.min.js"></script>
+    <!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>-->
 
-    <!-- Include jQuery and Select2 -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+    <!-- Include jQuery and Select2 JS -->
+    <script src="../assets/js/jquery.min.js"></script>
+    <!--<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>-->
+    
+    <script src="../assets/js/select2.min.js"></script>
+    <!--<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>-->
 
     <script>
 

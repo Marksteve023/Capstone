@@ -1,6 +1,6 @@
 <?php
 $host = 'localhost';  
-$dbname = 'attendance_db';
+$dbname = 'attendance_monitoring_db';
 $username = 'root';  
 $password = '';  
 try {
