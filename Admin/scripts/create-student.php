@@ -33,13 +33,6 @@
                 exit;
             }
 
-            //Validate RFID format (e.g., alphanumeric, 8 characters)
-            //if (empty($rfid_tag) || !preg_match('/^[0-9A-F]{8}$/', $rfid_tag)) {
-            //    $_SESSION['error'] = "Invalid RFID format. It must be 8 alphanumeric characters.";
-            //    header("Location: ../manage-students.php");
-            //    exit;
-            //}
-
             // Check if RFID is already used
             $sql = "SELECT * FROM students WHERE rfid_tag = :rfid_tag";
             if (!empty($_POST['student_id'])) {

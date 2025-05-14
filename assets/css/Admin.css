@@ -49,7 +49,7 @@
 }
 
 /* =================
-  COURSE & SECTION 
+      TABLE
 ================== */
 
 
@@ -57,7 +57,8 @@
 .assigned-course-container, 
 .student-container, 
 .student-enrollment-container, 
-.user-list-container  {
+.user-list-container
+ {
   margin-top: 3rem;
   min-width: 350px;
   padding: 1rem;
@@ -68,6 +69,17 @@
   border: 1px solid var(--title-color);
   margin-bottom: 2rem;
 }
+  
+.attendance-report {
+  margin: 3rem auto 2rem auto;
+  min-width: 350px;
+  padding: 1rem;
+  background-color: var(--body-color);
+  border-radius: 10px;
+  box-shadow: var(--box-shadow);
+  height: 550px;
+  border: 1px solid var(--title-color);
+}
 
 #profile-container {
   background-color: var(--body-color);    
@@ -75,4 +87,128 @@
   border: 1px solid var(--title-color);
   border-radius: 10px;
   color: var(--title-color);
+}
+
+/* =============
+MODALS & TABLES
+================ */
+.modal-custom {
+    max-width: 100%;
+    width: 95%;
+}
+
+.table-responsive {
+    max-height: 60vh;
+    overflow-y: auto;
+    margin-bottom: 2rem;
+}
+
+.custom-btn {
+    margin-right: 15px;
+}
+
+/* =====================
+ATTENDANCE REPORT CHART
+======================== */
+.chart-container,
+.studentChart-container {
+    margin: 2rem auto 3rem auto;
+    background-color: var(--body-color);
+    box-shadow: var(--box-shadow);
+    border: 1px solid var(--title-color);
+    border-radius: 10px;
+    color: var(--title-color);
+    padding: 1rem;
+    width: 100%;
+    max-width: 1000px; 
+    text-align: center;
+}
+
+.title-chart h2, h6{
+    color: var(--body-color);
+}
+
+/* Flex layout for chart cards */
+.chart-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+}
+
+/* Individual chart card */
+.chart-card {
+    flex: 1 1 45%;
+    max-width: 450px;
+    min-width: 300px;
+    background-color: var(--body-color);
+    border: 1px solid var(--title-color);
+    border-radius: 10px;
+    padding: 1rem;
+    box-shadow: var(--box-shadow);
+}
+
+/* Canvas sizing inside chart cards */
+.chart-card canvas {
+    width: 100% !important;
+    height: auto !important;
+    display: block;
+    margin: 0 auto;
+}
+
+/* ===============
+ATTENDANCE REPORT
+==================*/
+.attendance-report {
+    margin: 3rem auto 1rem auto;
+    min-width: 450px;
+    padding: 1rem;
+    background-color: var(--body-color);
+    border-radius: 10px;
+    box-shadow: var(--box-shadow);
+    height: 600px;
+    border: 1px solid var(--title-color);
+}
+
+/* ==========
+SEARCH INPUT
+============= */
+.search-wrapper-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 15px;
+}
+
+.search-input {
+    width: 80%;
+    padding: 10px;
+    font-size: 1rem;
+    border-radius: 5px;
+    outline: none;
+    background-color: var(--body-color);
+    border: 1px solid var(--title-color);
+    color: var(--text-color);
+}
+
+.search-input:focus {
+    border-color: #6268f1;
+    outline: none;
+}
+
+/* ============
+BADGE STYLING
+===============*/
+.badge.bg-purple {
+    background-color: #6f42c1 !important; 
+    color: #ffffff !important; 
+}
+
+
+@media (max-width: 768px) {
+    .studentChart-container {
+        width: 90%;
+        height: auto;
+    }
 }

@@ -52,6 +52,21 @@ foreach ($records as $session) {
     $set_groups[$session['set_group']] = $session['set_group'];
     $attendance_dates[$session['attendance_date']] = $session['attendance_date'];
 }
+// --- Sort filters alphabetically
+ksort($courses);
+ksort($sections);
+ksort($attendance_dates);
+
+// --- Order set groups manually (e.g., Set A, Set B)
+$set_group_order = ['Set A', 'Set B'];
+$ordered_set_groups = [];   
+
+foreach ($set_group_order as $group) {
+    if (isset($set_groups[$group])) {
+        $ordered_set_groups[$group] = $group;
+    }
+}
+$set_groups = $ordered_set_groups;
 ?>
 
 <!DOCTYPE html>

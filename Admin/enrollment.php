@@ -93,14 +93,23 @@ if ($_SESSION['role'] !== 'admin') {
     <div class="main" id="main">
         <h1>Student Course Enrollment</h1>
 
-        <div class="container mt-4">
+        <div class="d-flex justify-content-center align-items-center mb-3" style="margin-top: 2.5rem;">
+            <div class="col-4 text-center"> 
+                <select class="form-select mx-2" id="manual-select" style="text-align: center;">
+                    <option value="add">Enroll Student</option>
+                    <option value="import">Import Enrolled Students</option>
+                </select>
+            </div>
+        </div>
+
+        <div class="container manual mt-4" id="manual">
             <div class="card shadow-lg">
                 <div class="card-header">
-                    <h2 class="mb-0 text-center">Student Enrollment</h2>
+                    <h2 class="mb-0 text-center"><?php echo $re_enrollId ? 'Reassign' : 'Enroll'; ?> Student</h2>
                 </div>
 
                 <div class="card-body">
-                    <form action="../admin/scripts/enroll.php" method="POST">
+                    <form action="../Admin/scripts/enroll.php" method="POST" >
                     <input type="hidden" name="re_enroll_id" value="<?php echo htmlspecialchars($re_enrollId); ?>">
                         <div class="row">
                             <div class="col-md-6">
@@ -118,7 +127,7 @@ if ($_SESSION['role'] !== 'admin') {
                             <div class="col-md-6">
                                     <div class="mb-3">
                                         <label for="section" class="form-label">Section</label>
-                                        <select class="form-select select2" name="section" id="section" onchange="updateSection()" required>
+                                        <select class="form-select select2" name="section" id="section" onchange="updateSection()">
                                             <option value="" disabled <?= empty($selectedSection) ? 'selected' : '' ?>>Select Section</option>
                                             <?php foreach ($sectionOptions as $section) : ?>
                                                 <option value="<?php echo htmlspecialchars($section['section']); ?>"
@@ -131,7 +140,7 @@ if ($_SESSION['role'] !== 'admin') {
 
                                 <div class="mb-3">
                                     <label for="course_id" class="form-label">Courses</label>
-                                    <select class="form-select select2-multiple select2" id="course_id" name="course_id[]" required  multiple>
+                                    <select class="form-select select2-multiple select2" id="course_id" name="course_id[]" multiple>
                                     <?php foreach ($courseOptions as $course) : ?>
                                             <option value="<?php echo htmlspecialchars($course['course_id']) ?>" data-section="<?= htmlspecialchars($course['section']) ?>">
                                                 <?php echo htmlspecialchars($course['course_name'] . ' - ' . $course['section']) ?>
@@ -144,9 +153,13 @@ if ($_SESSION['role'] !== 'admin') {
                         
                         <!-- Submit Button -->
                         <div class="mb-3 d-flex justify-content-center">
-                            <button type="submit" class="btn btn-primary w-50">
-                                <?php echo $re_enrollId ? 'Reassign Course' : 'Enroll Course'; ?>
+                            <button type="submit" class="btn btn-primary">
+                                <?php echo $re_enrollId ? 'Reassign' : 'Enroll'; ?>
                             </button>
+
+                            <?php if ($re_enrollId): ?>
+                                <a href="enrollment.php" class="btn btn-secondary ms-2">Cancel Reassign</a>
+                            <?php endif; ?>
                         </div>
 
                         <!-- Error & Success Messages -->
@@ -166,6 +179,35 @@ if ($_SESSION['role'] !== 'admin') {
 
                         <div id="message-container"></div>   
                     </form>
+                </div>
+            </div>
+        </div>
+        
+        <div class="container import mt-4" id="import">
+            <div class="card shadow-lg">
+                <div class="card-header">
+                    <h2 class="mb-0 text-center">Import Enrolled Student</h2>
+                </div>
+
+                <div class="card-body">
+                    <div class="continer">
+                        <div class="row justify-content-center align-items-center h-100">
+                            <div class="col-md-6">
+                            <form action="../Admin/scripts/upload_enrollments.php" method="POST" enctype="multipart/form-data">
+                                    
+                                    <div class="mb-3 text-center">
+                                        <label for="file">File (Excel or Csv)</label>
+                                        <input type="file" id="file" name="file" accept=".xlsx, .csv">
+                                    </div>
+                                    
+                                    <!-- Submit Button -->
+                                    <div class="mb-3 text-center">
+                                        <button type="submit" name="submit" class="btn btn-primary">Upload Excel/CSV</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -218,14 +260,19 @@ if ($_SESSION['role'] !== 'admin') {
                                         ?>
                                     </td>
                                     <td>
-                                    <div class="d-flex gap-2">
+                                    <div class="d-flex gap-2 justify-content-center">
                                         <a href="?re_enroll_id=<?php echo htmlspecialchars($enrolled['student_course_id']); ?>" 
-                                        class="btn btn-warning btn-sm">Edit</a>
-
+                                            class="btn btn-outline-warning btn-sm">
+                                            <i class="bi bi-pencil-square"></i>
+                                            Edit
+                                        </a>
                                         <form id="delete-form-<?php echo $enrolled['student_course_id']; ?>" action="" method="POST">
                                             <input type="hidden" name="user_id" value="<?php echo $enrolled['student_course_id']; ?>">
-                                            <button type="button" class="btn btn-danger btn-sm" 
-                                            onclick="deleteEnrolled(<?php echo $enrolled['student_course_id']; ?>)">Delete</button>
+                                            <button type="button" class="btn btn-outline-danger btn-sm" 
+                                                onclick="deleteEnrolled(<?php echo $enrolled['student_course_id']; ?>)">
+                                                <i class="bi bi-trash"></i>
+                                                Delete
+                                            </button>
                                         </form>
                                     </div>
                                     </td>
@@ -260,6 +307,19 @@ if ($_SESSION['role'] !== 'admin') {
     <!--<script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>-->
 
     <script>
+        // Hide the import form initially
+        document.getElementById('import').style.display = 'none';
+
+        document.getElementById('manual-select').addEventListener('change', function() {
+            const selectedValue = this.value;
+            if (selectedValue === 'add') {
+                document.getElementById('manual').style.display = 'block';
+                document.getElementById('import').style.display = 'none';
+            } else if (selectedValue === 'import') {
+                document.getElementById('import').style.display = 'block';
+                document.getElementById('manual').style.display = 'none';
+            }
+        });
 
         async function fetchStudentDetails() {
             const studentId = document.getElementById("school_student_id").value.trim();
@@ -338,7 +398,7 @@ if ($_SESSION['role'] !== 'admin') {
                     alert.style.transition = "opacity 0.5s ease-out"; 
                     alert.style.opacity = "0"; 
 
-                    setTimeout(() => alert.remove(), 500); // Remove after fading
+                    setTimeout(() => alert.remove(), 500); 
                 });
             }, 3000);
         });

@@ -115,6 +115,7 @@ $courses = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         </button>
                     </div>
                 </form>
+                <div class="" id="message-container"></div> 
             </div>
         </div>
 
@@ -342,16 +343,35 @@ $courses = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $.post("../Teacher/scripts/save_attendance.php", { attendance_data: JSON.stringify(attendanceData) }, function (response) {
                 console.log(response);
                 if (response === "success") {
-                    alert("Attendance saved successfully!");
+                    showMessage("Attendance saved successfully!");
                     const attendanceModal = bootstrap.Modal.getInstance(document.getElementById("attendanceModal"));
                     attendanceModal.hide();
                     $("#attendanceTable").html(""); // Reset table
                     document.getElementById("CreateAttendanceForm").reset(); // Reset form
                 } else {
-                    alert("There was an error saving attendance. Please try again.");
+                    showMessage("There was an error saving attendance. Please try again.");
                 }
             });
         });
-</script>
+
+             function showMessage(message, type = 'success') {
+            const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
+            $('#message-container').html(`
+                <div class="alert ${alertClass} alert-dismissible fade show mt-3" role="alert">
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `);
+            
+             // Auto-hide after 3 seconds (3000 ms)
+            setTimeout(() => {
+                $('#message-container .alert').fadeOut('slow', function () {
+                    $(this).remove();
+                });
+            }, 3000);
+        }
+
+
+    </script>
 </body>
 </html>

@@ -108,6 +108,14 @@
                     </a>
                 </div>
 
+                <!--====== Reports ======-->
+                <div class="sidebar-list">
+                    <a href="reports.php" class="sidebar-link">
+                       <i class="fa-solid fa-chart-bar"></i>
+                        <span>Reports</span>
+                    </a>
+                </div>
+
                 <!--=======  Manage User ======-->
                 <div class="sidebar-list">
                     <a href="manage-user.php" class="sidebar-link">

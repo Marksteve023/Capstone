@@ -3,7 +3,7 @@
 session_start();   
 require_once __DIR__ . '/../config/db.php'; 
 
-// Debugging: Check if session exists
+
 if (!isset($_SESSION['email']) || empty($_SESSION['role'])) {
     echo "Session expired or not set!";
     header("Location: ../login.php");
@@ -130,9 +130,14 @@ if (isset($_GET['reassign_id'])) {
 
                         <!-- Submit Button -->
                         <div class="mb-3 d-flex justify-content-center">
-                            <button type="submit" class="btn btn-primary w-50">
+                            <button type="submit" class="btn btn-primary">
                                 <?php echo $reassignId ? 'Reassign Course' : 'Assign Course'; ?>
                             </button>
+
+                             <!-- Cancel Button (only shows when editing) -->
+                             <?php if ($reassignId): ?>
+                                <a href="manage-teachers.php" class="btn btn-secondary ms-2">Cancel Reassign</a>
+                            <?php endif; ?>
                         </div>
 
                         <!-- Error & Success Messages -->
@@ -199,13 +204,16 @@ if (isset($_GET['reassign_id'])) {
                                         ?>
                                     </td>
                                     <td>
-                                        <div class="d-flex gap-2">
-                                            <a href="?reassign_id=<?php echo htmlspecialchars($assigned_course['assigned_course_id']); ?>" class="btn btn-warning btn-sm">Reassign</a>
+                                        <div class="d-flex gap-2 justify-content-center">
+                                            <a href="?reassign_id=<?php echo htmlspecialchars($assigned_course['assigned_course_id']); ?>" 
+                                                class="btn btn-outline-warning btn-sm">
+                                                <i class="bi bi-pencil-square"></i> Reassign
+                                            </a>
                                             
                                             <form id="delete-form-<?php echo $assigned_course['assigned_course_id']; ?>" 
                                                 action="" method="POST" style="display:inline;">
                                                 <input type="hidden" name="assigned_course_id" value="<?php echo $assigned_course['assigned_course_id']; ?>">
-                                                <button type="button" class="btn btn-danger btn-sm" onclick="deleteAssigned(<?php echo $assigned_course['assigned_course_id']; ?>)">Delete</button>
+                                                <button type="button" class="btn btn-outline-danger btn-sm" onclick="deleteAssigned(<?php echo $assigned_course['assigned_course_id']; ?>)"> <i class="bi bi-trash"></i> Delete</button>
                                             </form>
 
                                         </div>
@@ -231,7 +239,6 @@ if (isset($_GET['reassign_id'])) {
     
     <script src="../assets/js/bootstrap.min.js"></script>
     <!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"></script>-->
-
 
     <!-- Include jQuery and Select2 JS -->
     <script src="../assets/js/jquery.min.js"></script>

@@ -1,0 +1,10 @@
+school_student_id,student_name,rfid_tag,program,year_level,email,password
+2024-00126,Ana Garcia,RFID00126,BSCS,2nd Year,ana.garcia@example.com,pass1234
+2024-00127,Mark Lopez,RFID00127,BSIS,3rd Year,mark.lopez@example.com,pass5678
+LFCA12451,Justine Burat,RFID1234,BSIT,3rd Year,burat@gmail.com,password4214
+20230001,Alice Mendoza ,04A1C9F3D2  ,BSIT   ,1st Year,alice@example.com,password12345
+20230002, Bryan Santos   ,0FA2B7D981  ,BSCS ,1st Year,bryan@gmail.com,password12345
+20230003,Carla Reyes  ,1B34D7E2A4 ,BSCS,2nd Year,carla@gmail.com,password12345
+20230004,Daniel Cruz , 9D8C6F1A3B   ,BSIT,1st Year,cruz@gmail.com,password12345
+20230005, Erika Lim   ,2A8E4C7D10 ,BSIS,2nd Year,lim@gmail.com,password12345
+20230006, Francis dela Rosa,3D7F8A9EBC,BSIT,3rd Year,fran@gmail.com,password12345

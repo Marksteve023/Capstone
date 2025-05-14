@@ -109,17 +109,23 @@ try {
                                         $start = $activeStartYear + $i;
                                         $end = $start + 1;
                                         $val = "$start-$end";
-                                        $selected = ($val === $activeAY) ? 'selected' : '';
+                                        $selected = ($edit_course && $val === $edit_course['academic_year']) ? 'selected' : ''; // Check if it's the current academic year for editing
                                         echo "<option value='$val' $selected>$val</option>";
                                     }
                                 ?>
-
                             </select>
                         </div>
 
 
-                        <div class="mb-3 d-flex justify-content-center">
-                            <button type="submit" class="btn btn-primary w-50"><?php echo $edit_course ? 'Update' : 'Save'; ?></button>
+
+                        <div class="mb-3 d-flex justify-content-center" style="margin-top: 1.5rem;">
+
+                            <button type="submit" class="btn btn-primary" ><?php echo $edit_course ? 'Update' : 'Save'; ?></button>
+                            
+                            <!-- Cancel Button (only shows when editing) -->
+                            <?php if ($edit_course): ?>
+                                <a href="course-section.php" class="btn btn-secondary ms-2">Cancel Edit</a>
+                            <?php endif; ?>
                         </div>
 
                             
@@ -191,14 +197,21 @@ try {
                                         ?>
                                     </td>
                                     <td>
-
-                                        <div class="d-flex gap-2">
-                                            <a href="?id=<?php echo htmlspecialchars($course['course_id']); ?>" class="btn btn-warning btn-sm">Edit</a>
+                                        <div class="d-flex gap-2 justify-content-center">
+                                            <a href="?id=<?php echo htmlspecialchars($course['course_id']); ?>"
+                                                class="btn btn-outline-warning btn-sm">
+                                                <i class="bi bi-pencil-square"></i> 
+                                                Edit
+                                            </a>
                                         
                                             <form id="delete-form-<?php echo $course['course_id']; ?>" 
                                                 action="" method="POST" style="display:inline;">
                                                 <input type="hidden" name="course_id" value="<?php echo $course['course_id']; ?>">
-                                                <button type="button" class="btn btn-danger btn-sm" onclick="deleteCourse(<?php echo $course['course_id']; ?>)">Delete</button>
+                                                <button type="button" class="btn btn-outline-danger btn-sm" 
+                                                    onclick="deleteCourse(<?php echo $course['course_id']; ?>)">
+                                                    <i class="bi bi-trash"></i>
+                                                    Delete
+                                                </button>
                                             </form>
                                         </div>
                                     </td>   

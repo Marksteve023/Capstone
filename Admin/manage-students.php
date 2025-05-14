@@ -2,15 +2,13 @@
 session_start();
 require_once __DIR__ . '/../config/db.php';
 
-// Debugging: Check if session exists
+// Session validation
 if (!isset($_SESSION['email']) || empty($_SESSION['role'])) {
-    echo "Session expired or not set!";
     header("Location: ../login.php");
     exit();
 }
 
 if ($_SESSION['role'] !== 'admin') {
-    echo "Unauthorized access!";
     header("Location: ../login.php");
     exit();
 }
@@ -18,7 +16,7 @@ if ($_SESSION['role'] !== 'admin') {
 $edit_student = null;
 $students = [];
 
-// Fetch all students
+// Fetch students
 try {
     $sql = "SELECT * FROM students ORDER BY student_name ASC";
     $stmt = $conn->prepare($sql);
@@ -27,13 +25,12 @@ try {
 } catch (PDOException $e) {
     $_SESSION['error'] = "Database error: " . $e->getMessage();
 }
-
-// Edit student logic
+// Check if an ID is present in the URL for potential editing
 if (isset($_GET['id']) && filter_var($_GET['id'], FILTER_VALIDATE_INT)) {
     $student_id = $_GET['id'];
 
     try {
-        $sql = "SELECT * FROM students WHERE student_id = :student_id ORDER BY student_name ASC";
+        $sql = "SELECT * FROM students WHERE student_id = :student_id";
         $stmt = $conn->prepare($sql);
         $stmt->bindParam(":student_id", $student_id, PDO::PARAM_INT);
         $stmt->execute();
@@ -43,10 +40,15 @@ if (isset($_GET['id']) && filter_var($_GET['id'], FILTER_VALIDATE_INT)) {
     }
 }
 
+// Determine the form title and button text based on whether $edit_student is set
+$formTitle = $edit_student ? 'Edit Student' : 'Add Student';
+$submitButtonText = $edit_student ? 'Edit Student' : 'Add Student';
+
+// Pre-fill the form fields ONLY if $edit_student has data
 $student_name = htmlspecialchars($edit_student['student_name'] ?? '');
 $email = htmlspecialchars($edit_student['email'] ?? '');
-?>
 
+?>
 
 <!-- Manage-student.php -->
 <!DOCTYPE html>
@@ -62,102 +64,131 @@ $email = htmlspecialchars($edit_student['email'] ?? '');
     <main class="main" id="main">
         <h1>Manage Student</h1>
 
-        <div class="container mt-4">
+
+        <div class="d-flex justify-content-center align-items-center mb-3" style="margin-top: 2.5rem;">
+            <div class="col-4 text-center"> 
+                <select class="form-select select2 mx-2" id="manual-select" style="text-align: center;">
+                    <option value="add">Add Student</option>
+                    <option value="import">Import Students</option>
+                </select>
+            </div>
+        </div>
+
+
+        <div class="container manual mt-4" id="manual">
             <div class="card shadow-lg">
                 <div class="card-header text-center">
-                    <h2 class="mb-0"><?php echo $edit_student ? 'Edit' : 'Add';?> Student</h2>
+                    <h2 class="mb-0"><?= $formTitle; ?> Student</h2>
                 </div>
                 <div class="card-body">
+                   
                     <form action="../admin/scripts/create-student.php" method="POST" enctype="multipart/form-data">
                         <?php if ($edit_student): ?>
                             <input type="hidden" name="student_id" value="<?= htmlspecialchars($edit_student['student_id']) ?>">
                         <?php endif; ?>
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label for="school_student_id">School ID</label>
-                                    <input type="text" class="form-control" id="school_student_id" name="school_student_id" required value="<?= htmlspecialchars($edit_student['school_student_id'] ?? '') ?>">
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="student_name" class="form-label">Student Name</label>
-                                    <input type="text" class="form-control" id="student_name" name="student_name" required value="<?= $student_name ?>">
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="email" class="form-label">Email</label>
-                                    <input type="email" class="form-control" id="email" name="email"
-                                        placeholder="example@gmail.com" required
-                                        value="<?= $email ?>">
-                                </div>
-
-                                <div class="mb-3">
-                                    <label for="password">Password</label>
-                                    <input type="password" class="form-control" id="password" name="password" placeholder="Must be at least 8 characters." minlength="8" <?= !$edit_student ? 'required' : ''; ?>>
-                                </div>
-
+                        <div class="row g-3">
+                            <div class="col-md-6 mb-3">
+                                <label for="school_student_id">School ID</label>
+                                <input type="text" class="form-control" id="school_student_id" name="school_student_id" required value="<?= htmlspecialchars($edit_student['school_student_id'] ?? '') ?>">
                             </div>
 
-                            <div class="col-md-6">
+                            <div class="col-md-6 mb-3">
+                                <label for="student_name">Student Name</label>
+                                <input type="text" class="form-control" id="student_name" name="student_name" required value="<?= $student_name ?>">
+                            </div>
 
-                            <div class="mb-3">
-                                    <label for="rfid_tag">RFID</label>
-                                    <input type="text" class="form-control" id="rfid_tag" name="rfid_tag"    value="<?= htmlspecialchars($edit_student['rfid_tag'] ?? '') ?>">
-                                </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="rfid_tag">RFID</label>
+                                <input type="text" class="form-control" id="rfid_tag" name="rfid_tag" value="<?= htmlspecialchars($edit_student['rfid_tag'] ?? '') ?>">
+                            </div>
 
+                            <div class="col-md-4 mb-3">
+                                <label for="email">Email</label>
+                                <input type="email" class="form-control" id="email" name="email" required value="<?= $email ?>" placeholder="example@gmail.com">
+                            </div>
 
-                                <div class="mb-3">
-                                    <label for="program">Academic Program</label>
-                                    <select class="form-select select2" name="program" id="program" required>
-                                        <option value="" disabled <?= !$edit_student ? 'selected' : ''; ?>>--- Select Program ---</option>
-                                        <option value="ACT" <?= ($edit_student && $edit_student['program'] == 'ACT') ? 'selected' : ''; ?>>Associate in Computer Technology</option>
-                                        <option value="BSCS" <?= ($edit_student && $edit_student['program'] == 'BSCS') ? 'selected' : ''; ?>>BS in Computer Science</option>
-                                        <option value="BSIT" <?= ($edit_student && $edit_student['program'] == 'BSIT') ? 'selected' : ''; ?>>BS in Information Technology</option>
-                                        <option value="BSIS" <?= ($edit_student && $edit_student['program'] == 'BSIS') ? 'selected' : ''; ?>>BS in Information System</option>
-                                    </select>
-                                </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="password">Password</label>
+                                <input type="password" class="form-control" id="password" name="password" placeholder="Must be at least 8 characters." minlength="8" <?= !$edit_student ? 'required' : ''; ?>>
+                            </div>
 
-                                <div class="mb-3">
-                                    <label for="year_level" class="form-label">Year Level</label>
-                                    <select class="form-select select2" name="year_level" id="year_level" required>
-                                        <option value="" disabled <?php echo !$edit_student ? 'selected' : ''; ?>>--- Select Year Level---</option>
-                                        <option value="1st Year" <?php echo ($edit_student && $edit_student['year_level'] == '1st Year') ? 'selected' : ''; ?>>1st Year</option>
-                                        <option value="2nd Year" <?php echo ($edit_student && $edit_student['year_level'] == '2nd Year') ? 'selected' : ''; ?>>2nd Year</option>
-                                        <option value="3rd Year" <?php echo ($edit_student && $edit_student['year_level'] == '3rd Year') ? 'selected' : ''; ?>>3rd Year</option>
-                                        <option value="4th Year" <?php echo ($edit_student && $edit_student['year_level'] == '4th Year') ? 'selected' : ''; ?>>4th Year</option>
-                                    </select>
-                                </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="program">Academic Program</label>
+                                <select class="form-select select2" name="program" id="program" required>
+                                    <option value="" disabled <?= !$edit_student ? 'selected' : ''; ?>>--- Select Program ---</option>
+                                    <option value="ACT" <?= ($edit_student && $edit_student['program'] == 'ACT') ? 'selected' : ''; ?>>ACT</option>
+                                    <option value="BSCS" <?= ($edit_student && $edit_student['program'] == 'BSCS') ? 'selected' : ''; ?>>BSCS</option>
+                                    <option value="BSIT" <?= ($edit_student && $edit_student['program'] == 'BSIT') ? 'selected' : ''; ?>>BSIT</option>
+                                    <option value="BSIS" <?= ($edit_student && $edit_student['program'] == 'BSIS') ? 'selected' : ''; ?>>BSIS</option>
+                                </select>
+                            </div>
 
-                                <div class="mb-3">
-                                    <label for="picture" class="form-label">Profile Picture</label>
-                                    <input type="file" class="form-control" id="picture" name="picture" accept="image/*">
-                                    <input type="hidden" name="current_picture" value="<?php echo htmlspecialchars($edit_student['picture'] ?? ''); ?>">
-                                    <?php if (!empty($edit_student['picture'])): ?>
-                                        <img src="../../assets/uploads/<?php echo htmlspecialchars($edit_student['picture']); ?>" alt="Profile Picture" style="max-width: 150px; margin-top: 10px;">
-                                    <?php endif; ?>
-                                </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="year_level">Year Level</label>
+                                <select class="form-select select2" name="year_level" id="year_level" required>
+                                    <option value="" disabled <?= !$edit_student ? 'selected' : ''; ?>>--- Select Year Level ---</option>
+                                    <option value="1st Year" <?= ($edit_student && $edit_student['year_level'] == '1st Year') ? 'selected' : ''; ?>>1st Year</option>
+                                    <option value="2nd Year" <?= ($edit_student && $edit_student['year_level'] == '2nd Year') ? 'selected' : ''; ?>>2nd Year</option>
+                                    <option value="3rd Year" <?= ($edit_student && $edit_student['year_level'] == '3rd Year') ? 'selected' : ''; ?>>3rd Year</option>
+                                    <option value="4th Year" <?= ($edit_student && $edit_student['year_level'] == '4th Year') ? 'selected' : ''; ?>>4th Year</option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-4 mb-3">
+                                <label for="picture">Profile Picture</label>
+                                <input type="file" id="picture" name="picture" accept="image/*">
+                                <input type="hidden" name="current_picture" value="<?= htmlspecialchars($edit_student['picture'] ?? '') ?>">
                             </div>
                         </div>
 
                         <div class="mb-3 d-flex justify-content-center">
-                            <button type="submit" class="btn btn-primary w-50"><?= $edit_student ? 'Edit' : 'Add'; ?> Student</button>
+                            <!-- Submit Button -->
+                            <button type="submit" class="btn btn-primary"><?= $submitButtonText; ?></button>
+                            
+                            <!-- Cancel Button (only shows when editing) -->
+                            <?php if ($edit_student): ?>
+                                <a href="manage-students.php" class="btn btn-secondary ms-2">Cancel Edit</a>
+                            <?php endif; ?>
                         </div>
 
+
                         <?php if (!empty($_SESSION['error'])): ?>
-                                <div class="alert alert-danger">
-                                    <?php echo htmlspecialchars($_SESSION['error']); unset($_SESSION['error']); ?>
-                                </div>
-                            <?php endif; ?>
+                            <div class="alert alert-danger"><?= htmlspecialchars($_SESSION['error']); unset($_SESSION['error']); ?></div>
+                        <?php endif; ?>
 
-                            <?php if (!empty($_SESSION['message'])): ?>
-                                <div class="alert alert-success">
-                                    <?php echo htmlspecialchars($_SESSION['message']); unset($_SESSION['message']); ?>
-                                </div>
-                            <?php endif; ?>
+                        <?php if (!empty($_SESSION['message'])): ?>
+                            <div class="alert alert-success"><?= htmlspecialchars($_SESSION['message']); unset($_SESSION['message']); ?></div>
+                        <?php endif; ?>
 
-                        <div id="message-container"></div>   
+                        <div id="message-container"></div>
                     </form>
+                </div>
+            </div>
+        </div>
+        <div class="container import mt-4" id="import">
+            <div class="card shadow-lg">
+                <div class="card-header text-center">
+                    <h2 class="mb-0">Import Student Data</h2>
+                </div>
+                <div class="card-body">
+              
+                    <div class="container">
+                        <div class="row justify-content-center align-items-center h-100">
+                            <div class="col-md-6">
+                                <form action="../admin/scripts/upload_students.php" method="POST" enctype="multipart/form-data">
+                                    <div class="mb-3 text-center">
+                                        <label for="file">File (Excel or CSV)</label>
+                                        <input type="file" id="file" name="file" accept=".xlsx, .csv" class="form-control">
+                                    </div>
+
+                                    <div class="mb-3 text-center">
+                                        <button type="submit" name="submit" class="btn btn-primary">Upload Excel/CSV</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -217,15 +248,20 @@ $email = htmlspecialchars($edit_student['email'] ?? '');
                                     </td>
 
                                     <td>
-                                        <div class="d-flex gap-2">
-                                            <a href="?id=<?php echo htmlspecialchars(string: $student['student_id']);?>"   
-                                            class="btn btn-warning btn-sm">Edit</a>
+                                        <div class="d-flex gap-2 justify-content-center">
+                                        <a href="?id=<?php echo htmlspecialchars($student['student_id']); ?>"
+                                            class="btn btn-outline-warning btn-sm">
+                                            <i class="bi bi-pencil-square"></i> Edit
+                                        </a>
+
 
                                             <form id="delete-form-<?php echo $student['student_id']; ?>" 
                                                 action="" method="POST">
                                                 <input type="hidden" name="student_id" value="<?php echo $student['student_id']; ?>">
-                                                <button type="button" class="btn btn-danger btn-sm" 
-                                                onclick="deleteStudent(<?php echo $student['student_id']; ?>)">Delete</button>
+                                                <button type="button" class="btn btn-outline-danger btn-sm" 
+                                                    onclick="deleteStudent(<?php echo $student['student_id']; ?>)">
+                                                    <i class="bi bi-trash"></i>Delete
+                                                </button>
                                             </form>
                                         </div>
                                     </td>
@@ -236,9 +272,8 @@ $email = htmlspecialchars($edit_student['email'] ?? '');
                 </table>
             </div>
         </div>
+        
     </main>
-
-
 
 
     <!--=============== MAIN JS ===============-->
@@ -254,6 +289,20 @@ $email = htmlspecialchars($edit_student['email'] ?? '');
 
 
     <script>
+         // Hide the import form initially
+        document.getElementById('import').style.display = 'none';
+
+        document.getElementById('manual-select').addEventListener('change', function() {
+            const selectedValue = this.value;
+            if (selectedValue === 'add') {
+                document.getElementById('manual').style.display = 'block';
+                document.getElementById('import').style.display = 'none';
+            } else if (selectedValue === 'import') {
+                document.getElementById('import').style.display = 'block';
+                document.getElementById('manual').style.display = 'none';
+            }
+        });
+
 
         // Search Function
         document.getElementById('search-student').addEventListener('input', function () {
@@ -276,40 +325,40 @@ $email = htmlspecialchars($edit_student['email'] ?? '');
                 });
             }, 3000);
         });
-    </script>
+ 
+        // Create a WebSocket connection
+        const socket = new WebSocket('ws://localhost:9000');
+        
+        // When the connection is open
+        socket.addEventListener('open', function(event) {
+            console.log('WebSocket connected to RFID server');
 
-<script>
-    // Create a WebSocket connection
-    const socket = new WebSocket('ws://localhost:9000');
-    
-    // When the connection is open
-    socket.addEventListener('open', function(event) {
-        console.log('WebSocket connected to RFID server');
+            // Set the mode to 'assign' when the connection is established
+            socket.send(JSON.stringify({ type: 'set_mode', mode: 'assign' }));
+        });
 
-        // Set the mode to 'assign' when the connection is established
-        socket.send(JSON.stringify({ type: 'set_mode', mode: 'assign' }));
-    });
+        // Listen for messages from the WebSocket server
+        socket.addEventListener('message', function(event) {
+            try {
+                const data = JSON.parse(event.data);
 
-    // Listen for messages from the WebSocket server
-    socket.addEventListener('message', function(event) {
-        try {
-            const data = JSON.parse(event.data);
-
-            // Only update the RFID input if it's an assignment RFID
-            if (data.type === 'assign_rfid' && data.rfid) {
-                document.getElementById('rfid_tag').value = data.rfid;
-                console.log("Assigned RFID received:", data.rfid);
+                // Only update the RFID input if it's an assignment RFID
+                if (data.type === 'assign_rfid' && data.rfid) {
+                    document.getElementById('rfid_tag').value = data.rfid;
+                    console.log("Assigned RFID received:", data.rfid);
+                }
+            } catch (error) {
+                console.error('Error parsing message:', error);
             }
-        } catch (error) {
-            console.error('Error parsing message:', error);
-        }
-    });
+        });
 
-    // Optional: Listen for manual input (like testing RFID input manually)
-    document.getElementById('rfid_tag').addEventListener('input', function(event) {
-        console.log("Manual RFID input:", event.target.value);
-    });
-</script>
+        // Listen for manual input 
+        document.getElementById('rfid_tag').addEventListener('input', function(event) {
+            console.log("Manual RFID input:", event.target.value);
+        });
+
+    </script>
+    
 
 </body>
 </html>

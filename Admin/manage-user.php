@@ -56,7 +56,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <div class="container mt-4">
             <div class="card shadow-lg">
                 <div class="card-header text-center">
-                    <h2 class="mb-0"><?php echo $edit_user ? 'Edit' : 'Create'; ?> User</h2>
+                    <h2 class="mb-0"><?php echo $edit_user ? 'Update' : 'Create'; ?> User</h2>
                 </div>
                 <div class="card-body">
                     <form action="../admin/scripts/create-account.php" method="POST" enctype="multipart/form-data">
@@ -99,7 +99,7 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                                 <div class="mb-3">
                                     <label for="picture" class="form-label">Profile Picture</label>
-                                    <input type="file" class="form-control" id="picture" name="picture" accept="image/*">
+                                    <input type="file" id="picture" name="picture" accept="image/*">
                                     <input type="hidden" name="current_picture" value="<?php echo htmlspecialchars($edit_user['picture'] ?? ''); ?>">
                                     
                                 </div>
@@ -107,7 +107,12 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         </div>
 
                         <div class="mb-3 d-flex justify-content-center">
-                            <button type="submit" class="btn btn-primary w-50"><?php echo $edit_user ? 'Update Account' : 'Create Account'; ?></button>
+                            <button type="submit" class="btn btn-primary"><?php echo $edit_user ? 'Update' : 'Create'; ?></button>
+                            
+                           
+                            <?php if ($edit_user): ?>
+                                <a href="manage-user.php" class="btn btn-secondary ms-2">Cancel Edit</a>
+                            <?php endif; ?>
                         </div>
                         
                         <?php if (!empty($_SESSION['error'])): ?>
@@ -178,15 +183,15 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                         ?>
                                     </td>
                                     <td>
-                                        <div class="d-flex gap-2">
+                                        <div class="d-flex gap-2 justify-content-center">
                                             <a href="?id=<?php echo htmlspecialchars($user['user_id']); ?>" 
-                                            class="btn btn-warning btn-sm">Edit</a>
+                                            class="btn btn-outline-warning btn-sm"><i class="bi bi-pencil-square"></i> Edit</a>
 
                                             <form id="delete-form-<?php echo $user['user_id']; ?>" 
                                                 action="" method="POST">
                                                 <input type="hidden" name="user_id" value="<?php echo $user['user_id']; ?>">
-                                                <button type="button" class="btn btn-danger btn-sm" 
-                                                onclick="deleteUser(<?php echo $user['user_id']; ?>)">Delete</button>
+                                                <button type="button" class="btn btn-sm btn-outline-danger delete-report"
+                                                onclick="deleteUser(<?php echo $user['user_id']; ?>)"> <i class="bi bi-trash"></i> Delete</button>
                                             </form>
                                         </div>
                                     </td>

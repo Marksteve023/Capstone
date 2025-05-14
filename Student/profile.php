@@ -4,7 +4,7 @@ require_once '../config/db.php';
 
 // Ensure user is logged in
 if (!isset($_SESSION['student_id'])) {
-    header("Location: login.php");
+    header("Location: ../login.php");
     exit();
 }
 
@@ -67,7 +67,7 @@ try {
                         </div>
                     </div>
 
-                    <form action="../Student/scripts/update_student_profile.php" method="POST" enctype="multipart/form-data" class="mt-3">
+                    <form action="../Student/scripts/update_student_profile.php" method="POST" enctype="multipart/form-data" class="mt-3 row g-3 ">
                         <input type="hidden" name="csrf_token" value="<?php echo htmlspecialchars($_SESSION['csrf_token']); ?>">
 
                         <input type="file" id="fileInput" name="profile_picture" accept="image/*" class="d-none">

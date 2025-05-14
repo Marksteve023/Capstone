@@ -93,7 +93,7 @@ $set_groups = $ordered_set_groups;
             <form id="attendanceForm">
                 <div class="row g-3">
                     <!-- Course Dropdown -->
-                    <div class="col-md-3">
+                    <div class="col-md-3 mb-3">
                         <label for="course_name" class="form-label">Course Name</label>
                         <select id="course_name" class="form-select">
                             <option value="" disabled selected>All Courses</option>
@@ -105,7 +105,7 @@ $set_groups = $ordered_set_groups;
                     </div>
 
                     <!-- Section Dropdown -->
-                    <div class="col-md-3">
+                    <div class="col-md-3 mb-3">
                         <label for="section" class="form-label">Section</label>
                         <select id="section" class="form-select" required>
                             <option value="" disabled selected>All Sections</option>
@@ -116,7 +116,7 @@ $set_groups = $ordered_set_groups;
                     </div>
 
                     <!-- Set Group Dropdown -->
-                    <div class="col-md-2">
+                    <div class="col-md-2 mb-3">
                         <label for="setGroup" class="form-label">Set Group</label>
                         <select id="setGroup" class="form-select" required>
                             <option value="" disabled selected>All Groups</option>
@@ -127,7 +127,7 @@ $set_groups = $ordered_set_groups;
                     </div>
 
                     <!-- Date Picker -->
-                    <div class="col-md-2">
+                    <div class="col-md-2 mb-3">
                         <label for="attendance_date" class="form-label">Attendance Date</label>
                         <div class="input-group">
                             <span class="input-group-text" id="datePickerIcon" style="cursor: pointer;">
@@ -138,7 +138,7 @@ $set_groups = $ordered_set_groups;
                     </div>
 
                     <!-- Time Picker -->
-                    <div class="col-md-2">
+                    <div class="col-md-2 mb-3">
                         <label for="attendance_time" class="form-label">Time</label>
                         <div class="input-group">
                             <span class="input-group-text" id="timePickerIcon" style="cursor: pointer;">
@@ -168,7 +168,7 @@ $set_groups = $ordered_set_groups;
     <div id="reportSection" class="container mt-5" style="display: none;">
         <div class="title-chart">
             <h2 class="text-center">Class Attendance</h2>
-            <h6 id="reportTitle" class="text-center"></h6> <!-- Dynamic title based on filters -->
+            <h6 id="reportTitle" class="text-center"></h6>
         </div>
 
         <!-- Charts -->
@@ -316,7 +316,7 @@ $set_groups = $ordered_set_groups;
 
                     <!-- Modal Footer with Download Button -->
                     <div class="modal-footer">
-                        <button class="btn btn-success mt-3" id="studentReportDownload">Download</button>
+                        <button class="btn btn-outline-success mt-3" id="studentReportDownload">Download</button>
                     </div>
                 </div>
             </div>
@@ -342,6 +342,7 @@ $set_groups = $ordered_set_groups;
 <!--<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>-->
     
 <script>
+
 // ============================
 // Attendance Report Scripts
 // Handles UI events, filtering, chart updates, and report generation
@@ -604,7 +605,7 @@ $('#attendanceForm').on('submit', function (e) {
                                 data-course="${course}"
                                 data-section="${section}"
                             >
-                                View Report
+                                <i class="bi bi-eye"></i> View Report
                             </button>
                         </td>
                     </tr>`;
@@ -709,3 +710,6 @@ $(document).on('click', '.view-student-report', function () {
     });
 });
 </script>
+
+</body>
+</html>
