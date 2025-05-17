@@ -2,48 +2,52 @@
     session_start();
     include '../config/db.php';
 
-    // Debugging: Check if session exists
-if (!isset($_SESSION['email']) || empty($_SESSION['role'])) {
-    echo "Session expired or not set!";
-    header("Location: ../login.php");
-    exit();
-}
+    if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+    }
 
-if ($_SESSION['role'] !== 'admin') {
-    echo "Unauthorized access!";
-    header("Location: ../login.php");
-    exit();
-}
+        // Debugging: Check if session exists
+    if (!isset($_SESSION['email']) || empty($_SESSION['role'])) {
+        echo "Session expired or not set!";
+        header("Location: ../login.php");
+        exit();
+    }
 
-// Initialize course editing data
-$edit_course = null;
+    if ($_SESSION['role'] !== 'admin') {
+        echo "Unauthorized access!";
+        header("Location: ../login.php");
+        exit();
+    }
 
-if (isset($_GET['id']) && filter_var($_GET['id'], FILTER_VALIDATE_INT)) {
-    $course_id = $_GET['id'];
+    // Initialize course editing data
+    $edit_course = null;
+
+    if (isset($_GET['id']) && filter_var($_GET['id'], FILTER_VALIDATE_INT)) {
+        $course_id = $_GET['id'];
+        try {
+            $sql = "SELECT * FROM courses WHERE course_id = :course_id";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(':course_id', $course_id, PDO::PARAM_INT);
+            $stmt->execute();
+            $edit_course = $stmt->fetch(PDO::FETCH_ASSOC);
+        } catch (PDOException $e) {
+            $_SESSION['error'] = "Database error: " . $e->getMessage();
+        }
+    }
+
+    // Fetch all courses with instructor name
     try {
-        $sql = "SELECT * FROM courses WHERE course_id = :course_id";
+        $sql = "SELECT c.course_id, c.course_name, c.section, c.semester, c.academic_year, c.created_at, u.full_name 
+                FROM courses c 
+                LEFT JOIN assigned_courses ac ON c.course_id = ac.course_id 
+                LEFT JOIN users u ON ac.user_id = u.user_id
+                ORDER BY c.course_name ASC";
         $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':course_id', $course_id, PDO::PARAM_INT);
         $stmt->execute();
-        $edit_course = $stmt->fetch(PDO::FETCH_ASSOC);
+        $courses = $stmt->fetchAll(PDO::FETCH_ASSOC);
     } catch (PDOException $e) {
         $_SESSION['error'] = "Database error: " . $e->getMessage();
     }
-}
-
-// Fetch all courses with instructor name
-try {
-    $sql = "SELECT c.course_id, c.course_name, c.section, c.semester, c.academic_year, c.created_at, u.full_name 
-            FROM courses c 
-            LEFT JOIN assigned_courses ac ON c.course_id = ac.course_id 
-            LEFT JOIN users u ON ac.user_id = u.user_id
-            ORDER BY c.course_name ASC";
-    $stmt = $conn->prepare($sql);
-    $stmt->execute();
-    $courses = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    $_SESSION['error'] = "Database error: " . $e->getMessage();
-}
 ?>
 
 <!DOCTYPE html>
@@ -68,6 +72,8 @@ try {
                 <div class="card-body">
 
                     <form action="../Admin/scripts/create-course.php" method="POST">
+                         <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                         
                         <?php if ($edit_course): ?>
                             <input type="hidden" name="course_id" value="<?php echo htmlspecialchars($edit_course['course_id']); ?>">
                         <?php endif; ?>

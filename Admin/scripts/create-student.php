@@ -3,6 +3,11 @@
     include '../../config/db.php';
 
     if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+        if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+            die('CSRF token validation failed');
+        }
+        
         try {
             // Sanitize and validate input data
             $school_student_id = strtoupper(trim(htmlspecialchars($_POST['school_student_id']))); // Convert to uppercase and trim spaces

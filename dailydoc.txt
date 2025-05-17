@@ -1,6 +1,0 @@
-
-// MAY 5, 2025 \\\
-
-***  I change the server.js to handle the assigned rfid and the attendance to send to ardiuno to display in the lcd.
-
-*** I install mysql2 in the project folder

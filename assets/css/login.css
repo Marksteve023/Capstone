@@ -7,7 +7,9 @@ body {
 }
 
 #userFormContainer, 
-#studentFormContainer {
+#studentFormContainer,
+#forgotUser,
+#forgotStudent {
     max-width: 400px;
     background: rgba(255, 255, 255, 0.3);
     --backdrop-filter: blur(12px);
@@ -18,7 +20,9 @@ body {
 }
 
 #userFormContainer h2, 
-#studentFormContainer h2 {
+#studentFormContainer h2,
+#forgotUser h2,
+#forgotStudent h2{
     background: linear-gradient(135deg, #ff7f50, #ff6347, #1e90ff);
     -webkit-background-clip: text;
     background-clip: text;

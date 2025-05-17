@@ -4,6 +4,11 @@ include '../../config/db.php';
 
 // Check if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        die('CSRF token validation failed');
+    }
+
     try {
         // Sanitize and validate input data
         $school_user_id = htmlspecialchars($_POST['school_user_id']);
@@ -163,10 +168,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
             $_SESSION['message'] = ($stmt->rowCount() > 0) ? 'User created successfully!' : 'User creation failed!';
         }
-
+        
+        unset($_SESSION['csrf_token']);
         // Redirect back to the user management page
         header("Location: ../manage-user.php");
         exit();
+
     } catch (PDOException $e) {
         // Handle exception gracefully
         error_log("Database error: " . $e->getMessage()); // Log the error message

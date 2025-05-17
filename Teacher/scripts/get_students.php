@@ -8,7 +8,7 @@ if (isset($_POST['course_id']) && isset($_POST['set_group'])) {
     $set_group = $_POST['set_group'];
 
     // Query to fetch students based on course_id and set_group
-    $query = "SELECT s.student_id, s.school_student_id, s.student_name, s.rfid_tag
+    $query = "SELECT s.student_id, s.school_student_id, s.student_name, s.rfid_tag, s.picture
               FROM students s
               JOIN student_courses sc ON s.student_id = sc.student_id
               WHERE sc.course_id = ? AND sc.set_group = ?
@@ -27,3 +27,4 @@ if (isset($_POST['course_id']) && isset($_POST['set_group'])) {
     echo json_encode($students);
 }
 ?>
+    

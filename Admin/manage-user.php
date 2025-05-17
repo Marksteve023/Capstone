@@ -1,6 +1,10 @@
 <?php
 session_start();
-require_once __DIR__ . '/../config/db.php';
+require_once '../config/db.php';
+
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
 
 // Debugging: Check if session exists
 if (!isset($_SESSION['email']) || empty($_SESSION['role'])) {
@@ -60,6 +64,8 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 </div>
                 <div class="card-body">
                     <form action="../admin/scripts/create-account.php" method="POST" enctype="multipart/form-data">
+                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+
                         <?php if ($edit_user): ?>
                             <input type="hidden" name="user_id" value="<?php echo htmlspecialchars($edit_user['user_id']); ?>">
                         <?php endif; ?>

@@ -1,11 +1,4 @@
-<?php 
-session_start();
-
-if (empty($_SESSION['csrf_token'])) {
-    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-}
-
- ?>
+<?php session_start(); ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,9 +16,7 @@ if (empty($_SESSION['csrf_token'])) {
             <!-- Admin/Teacher Login -->
             <div id="userFormContainer" class="card shadow p-4 <?= isset($_SESSION['student_error']) ? 'd-none' : '' ?>">
                 <h2 class="text-center mb-3">Login</h2>
-                <form action="./includes/user-login2.php" method="post" id="logIn" autocomplete="off">
-                    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-
+                <form action="./includes/user-login.php" method="post" id="logIn" autocomplete="off">
                     <div class="mb-3">
                         <label for="role" class="form-label">Role</label>
                         <select name="role" id="role" class="form-select" required>
@@ -53,10 +44,12 @@ if (empty($_SESSION['csrf_token'])) {
                         <button type="submit" name="LogIn" class="btn btn-primary w-100">Login</button>
                     </div>
                     <div class="text-end">
-                        <a href="forgot_password_user.php" class="text-dark text-decoration-none forgot">Forgot Password?</a>
+                        <a href="forgot_password.php" class="text-dark text-decoration-none forgot">Forgot Password?</a>
                     </div>
                 </form>
+
                 
+
                 <p class="mt-3 text-center">
                     <button type="button" class="btn btn-link p-0 text-primary text-decoration-none" onclick="toggleForms()">Login as Student</button>
                 </p>
@@ -70,9 +63,7 @@ if (empty($_SESSION['csrf_token'])) {
             <!-- Student Login -->
             <div id="studentFormContainer" class="card shadow p-4 <?= isset($_SESSION['student_error']) ? '' : 'd-none' ?>">
                 <h2 class="text-center mb-4">Student Login</h2>
-                <form action="./includes/student-log2.php" method="POST" autocomplete="off">
-                    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-
+                <form action="./includes/student-log.php" method="POST" autocomplete="off">
                     <div class="mb-3">
                         <label for="school_student_id" class="form-label">Student ID</label>
                         <input type="text" id="school_student_id" name="school_student_id"
@@ -105,7 +96,7 @@ if (empty($_SESSION['csrf_token'])) {
                 </form>
               
                 <div class="text-end">
-                    <a href="forgot_password_student.php" class="text-dark text-decoration-none forgot">Forgot Password?</a>
+                    <a href="#" class="text-dark text-decoration-none forgot">Forgot Password?</a>
                 </div>
                 
                 <p class="mt-3 text-center">

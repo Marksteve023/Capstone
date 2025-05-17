@@ -54,8 +54,9 @@ $courses = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         <div class="container mt-4">
             <!-- Course Cards Section -->
-            <div class="cards-container d-flex justify-content-center">
-                <div class="row g-3">
+            <div class="container">
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
+
                     <?php if (!empty($courses)): ?>
                         <?php foreach ($courses as $course): ?>
                             <div class="col-md-4 col-sm-6 mb-4">

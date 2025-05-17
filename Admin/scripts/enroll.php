@@ -1,8 +1,13 @@
 <?php
 session_start();
-require_once __DIR__ . '/../../config/db.php';
+require_once '../../config/db.php';
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
+
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        die('CSRF token validation failed');
+    }
+    
     try {
         $conn->beginTransaction(); // Start transaction
 
@@ -16,6 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         // Validate required fields
         if (empty($school_student_id) || empty($student_name)) {
             $_SESSION['error'] = "You must provide a student name and student ID.";
+            unset($_SESSION['csrf_token']);
             header("Location: ../enrollment.php");
             exit();
         }
@@ -27,6 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         if (!$student) {
             $_SESSION['error'] = "Student not found.";
+            unset($_SESSION['csrf_token']);
             header("Location: ../enrollment.php");
             exit();
         }
@@ -45,6 +52,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
             if (empty($new_courses) && empty($removed_courses)) {
                 $_SESSION['message'] = "No changes detected in enrollment.";
+                unset($_SESSION['csrf_token']);
                 header("Location: ../enrollment.php");
                 exit();
             }
@@ -61,6 +69,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
             $conn->commit();
             $_SESSION['message'] = "Enrollment updated successfully!";
+            unset($_SESSION['csrf_token']);
             header("Location: ../enrollment.php");
             exit();
         }
@@ -73,6 +82,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             // Check if new courses are the same as before
             if (empty(array_diff($course_ids, $existing_courses))) {
                 $_SESSION['message'] = "No changes detected in re-enrollment.";
+                unset($_SESSION['csrf_token']);
                 header("Location: ../enrollment.php");
                 exit();
             }
@@ -81,6 +91,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         // Prevent duplicate enrollments
         if (!empty(array_intersect($course_ids, $existing_courses))) {
             $_SESSION['error'] = "Student is already enrolled in one or more selected courses.";
+            unset($_SESSION['csrf_token']);
             header("Location: ../enrollment.php");
             exit();
         }
@@ -93,16 +104,19 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         $conn->commit(); // Commit transaction
         $_SESSION['message'] = "Enrollment successful!";
+        unset($_SESSION['csrf_token']);
         header("Location: ../enrollment.php");
         exit();
     } catch (Exception $e) {
         $conn->rollBack(); // Rollback transaction on error
         $_SESSION['error'] = "Error: " . $e->getMessage();
+        unset($_SESSION['csrf_token']);
         header("Location: ../enrollment.php");
         exit();
     }
 } else {
     $_SESSION['error'] = "Invalid request.";
+    unset($_SESSION['csrf_token']);
     header("Location: ../enrollment.php");
     exit();
 }

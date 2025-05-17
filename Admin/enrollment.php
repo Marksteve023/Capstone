@@ -1,6 +1,11 @@
 <?php
- session_start();
- require_once __DIR__ . '/../config/db.php';
+session_start();
+require_once '../config/db.php';
+
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
 
  // Debugging: Check if session exists
 if (!isset($_SESSION['email']) || empty($_SESSION['role'])) {
@@ -110,7 +115,9 @@ if ($_SESSION['role'] !== 'admin') {
 
                 <div class="card-body">
                     <form action="../Admin/scripts/enroll.php" method="POST" >
-                    <input type="hidden" name="re_enroll_id" value="<?php echo htmlspecialchars($re_enrollId); ?>">
+                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                        <input type="hidden" name="re_enroll_id" value="<?php echo htmlspecialchars($re_enrollId); ?>">
+                        
                         <div class="row">
                             <div class="col-md-6">
                                     <div class="mb-3">

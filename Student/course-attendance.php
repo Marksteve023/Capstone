@@ -22,7 +22,7 @@ try {
     $stmt->execute();
     $courses = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
-    error_log("Database error: " . $e->getMessage()); // Log error
+    error_log("Database error: " . $e->getMessage());
 }
 ?>
 <!DOCTYPE html>
@@ -43,7 +43,7 @@ try {
                         <?php foreach ($courses as $course): ?>
                             <div class="col-md-4 col-sm-6 mb-4">
                                 <div class="card bg-primary text-white shadow-sm h-100">
-                                    <div class="card-body text-center position-relative">
+                                    <div class="card-body text-center">
                                         <h2 class="h5 mb-2">
                                             <strong><?= htmlspecialchars($course['course_name'] . ' - ' . $course['section']); ?></strong>
                                         </h2>

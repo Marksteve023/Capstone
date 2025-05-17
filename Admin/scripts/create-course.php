@@ -3,6 +3,11 @@ session_start();
 include '../../config/db.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+     if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        die('CSRF token validation failed');
+    }
+
     try {
         // Sanitize inputs
         $course_name = strtoupper($_POST['course_name'] ?? '');
@@ -49,7 +54,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->execute([':course_id' => $course_id, ':course_name' => $course_name, ':section' => $section, ':semester' => $semester, ':academic_year' => $academic_year]);
 
             $_SESSION['message'] = ($stmt->rowCount() > 0) ? 'Course updated successfully!' : 'No changes made!';
+
         } else {
+
             // Check if course already exists
             $stmt = $conn->prepare("SELECT course_id FROM courses WHERE course_name = :course_name AND section = :section");
             $stmt->execute([':course_name' => $course_name, ':section' => $section]);
@@ -70,7 +77,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         error_log("Database error: " . $e->getMessage());
         $_SESSION['error'] = 'An unexpected error occurred. Please try again later.';
     }
-
+    
+    unset($_SESSION['csrf_token']); // Invalidate CSRF token after use
     header("Location: ../course-section.php");
     exit;
 }

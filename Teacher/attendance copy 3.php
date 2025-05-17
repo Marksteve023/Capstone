@@ -115,11 +115,12 @@ $courses = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         </button>
                     </div>
                 </form>
+                <div class="" id="message-container"></div> 
             </div>
         </div>
 
         <!-- Modal: Student Attendance Marking -->
-        <div class="modal fade" id="attendanceModal" tabindex="-1" aria-labelledby="attendanceModalLabel" aria-hidden="true">
+        <div class="modal fade" id="attendanceModal" tabindex="-1" aria-labelledby="attendanceModalLabel" aria-hidden="true" data-bs-backdrop="static">
             <div class="modal-dialog modal-custom">
                 <div class="modal-content">
                     
@@ -131,12 +132,6 @@ $courses = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                     <!-- Modal Body: Student Attendance Table -->
                     <div class="modal-body">
-
-                        <!-- Display student picture -->
-                        <div id="studentPictureContainer" class="text-center mb-3">
-                            <!-- Student picture will be dynamically inserted here -->
-                        </div>
-    
                         <table class="table table-striped table-bordered tContainer">
                             <thead>
                                 <tr>
@@ -199,6 +194,8 @@ $courses = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 document.getElementById("attendance_time").showPicker();
             });
         });
+
+        
 
         // Initialize WebSocket connection (update URL as needed)
         const socket = new WebSocket("ws://localhost:9000");
@@ -266,7 +263,7 @@ $courses = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     section,
                                     setGroup,
                                     timestamp: "",
-                                    attendance_time: time
+                                    attendance_time: time       
                                 });
                             }
                         });
@@ -288,6 +285,7 @@ $courses = $stmt->fetchAll(PDO::FETCH_ASSOC);
         // =========================================
         // JS: WebSocket Message Handler (RFID Scan)
         // =========================================
+
         socket.onmessage = function (event) {
             const data = JSON.parse(event.data);
 
@@ -307,12 +305,8 @@ $courses = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     if (!studentRow) {
                         studentRow = document.createElement("tr");
                         studentRow.setAttribute("data-student-id", scannedStudent.student_id);
-
-                        // Assuming the picture field stores the image filename (relative path)
-                        const pictureSrc = scannedStudent.picture ? `../assets/uploads/${scannedStudent.picture}` : '../assets/images/default.jpg'; // fallback to default image
-
                         studentRow.innerHTML = `
-                            <td>${window.allStudents.indexOf(scannedStudent) + 1}</td>
+                            <td>${document.getElementById("attendanceTable").rows.length + 1}</td>
                             <td>${scannedStudent.school_student_id}</td>
                             <td>${scannedStudent.student_name}</td>
                             <td>${scannedStudent.courseName}</td>
@@ -329,18 +323,9 @@ $courses = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                     scannedStudent.status = status;
                     scannedStudent.timestamp = timestamp;
-
-                    // Display the student's picture in a separate section of the modal
-                    const pictureContainer = document.getElementById("studentPictureContainer"); // Add this div in the modal HTML
-                    const pictureSrc = scannedStudent.picture ? `../assets/uploads/${scannedStudent.picture}` : '../assets/uploads/default.jpg';
-                    pictureContainer.innerHTML = `
-                        <h5>${scannedStudent.student_name}</h5>
-                        <img src="${pictureSrc}" alt="Student Picture" class="img-fluid rounded" style="width: 150px; height: 150px; object-fit: cover;">
-                    `;
                 }
             }
         };
-
 
         // =================================
         // JS: Save Attendance Button Click
@@ -360,16 +345,35 @@ $courses = $stmt->fetchAll(PDO::FETCH_ASSOC);
             $.post("../Teacher/scripts/save_attendance.php", { attendance_data: JSON.stringify(attendanceData) }, function (response) {
                 console.log(response);
                 if (response === "success") {
-                    alert("Attendance saved successfully!");
+                    showMessage("Attendance saved successfully!");
                     const attendanceModal = bootstrap.Modal.getInstance(document.getElementById("attendanceModal"));
                     attendanceModal.hide();
                     $("#attendanceTable").html(""); // Reset table
                     document.getElementById("CreateAttendanceForm").reset(); // Reset form
                 } else {
-                    alert("There was an error saving attendance. Please try again.");
+                    showMessage("There was an error saving attendance. Please try again.");
                 }
             });
         });
-</script>
+
+             function showMessage(message, type = 'success') {
+            const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
+            $('#message-container').html(`
+                <div class="alert ${alertClass} alert-dismissible fade show mt-3" role="alert">
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            `);
+            
+             // Auto-hide after 3 seconds (3000 ms)
+            setTimeout(() => {
+                $('#message-container .alert').fadeOut('slow', function () {
+                    $(this).remove();
+                });
+            }, 3000);
+        }
+
+
+    </script>
 </body>
 </html>

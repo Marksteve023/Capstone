@@ -11,9 +11,9 @@ if (empty($_SESSION['csrf_token'])) {
 <head>
     <meta charset="UTF-8">
     <title>Login</title>
-    <link rel="stylesheet" href="./assets/css/bootstrap.min.css">
-    <link rel="stylesheet" href="./assets/css/login.css">
-    <link rel="stylesheet" href="./assets/css/bootstrap-icons.css">
+    <link rel="stylesheet" href="../assets/css/login.css">
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css" >
+    <link rel="stylesheet" href="../assets/css/bootstrap-icons.css">
 </head>
 <body class="d-flex justify-content-center align-items-center vh-100">
 <div class="container">
@@ -23,7 +23,7 @@ if (empty($_SESSION['csrf_token'])) {
             <!-- Admin/Teacher Login -->
             <div id="userFormContainer" class="card shadow p-4 <?= isset($_SESSION['student_error']) ? 'd-none' : '' ?>">
                 <h2 class="text-center mb-3">Login</h2>
-                <form action="./includes/user-login2.php" method="post" id="logIn" autocomplete="off">
+                <form action="../auth/user-login2.php" method="post" id="logIn" autocomplete="off">
                     <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
 
                     <div class="mb-3">
@@ -52,13 +52,14 @@ if (empty($_SESSION['csrf_token'])) {
                     <div class="mt-4 mb-3">
                         <button type="submit" name="LogIn" class="btn btn-primary w-100">Login</button>
                     </div>
-                    <div class="text-end">
-                        <a href="forgot_password_user.php" class="text-dark text-decoration-none forgot">Forgot Password?</a>
-                    </div>
                 </form>
                 
+                <div class="text-end">
+                    <a href="forgot_password_user.php" class="text-dark text-decoration-none forgot">Forgot Password?</a>
+                </div>
+                
                 <p class="mt-3 text-center">
-                    <button type="button" class="btn btn-link p-0 text-primary text-decoration-none" onclick="toggleForms()">Login as Student</button>
+                    <a href="../index.php" class="btn btn-link p-0 text-primary text-decoration-none">Back to Smart Attendance Monitoring System</a>
                 </p>
 
                 <?php if (isset($_SESSION['error'])): ?>
@@ -66,62 +67,12 @@ if (empty($_SESSION['csrf_token'])) {
                     <?php unset($_SESSION['error']); ?>
                 <?php endif; ?>
             </div>
-
-            <!-- Student Login -->
-            <div id="studentFormContainer" class="card shadow p-4 <?= isset($_SESSION['student_error']) ? '' : 'd-none' ?>">
-                <h2 class="text-center mb-4">Student Login</h2>
-                <form action="./includes/student-log2.php" method="POST" autocomplete="off">
-                    <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
-
-                    <div class="mb-3">
-                        <label for="school_student_id" class="form-label">Student ID</label>
-                        <input type="text" id="school_student_id" name="school_student_id"
-                               class="form-control"
-                               placeholder="Enter your student ID"
-                               required
-                               value="<?= isset($_SESSION['student_input']) ? htmlspecialchars($_SESSION['student_input']) : ''; ?>">
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="student_password" class="form-label">Password</label>
-                        <div class="input-group">
-                            <input type="password" id="student_password" name="password" class="form-control" required>
-                            <button type="button" class="btn btn-outline-secondary" onclick="togglePassword('student_password', 'toggleIcon2')">
-                                <i id="toggleIcon2" class="bi bi-eye"></i>
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <div class="mb-3">
-                        <button type="submit" name="studentLogIn" class="btn btn-primary w-100">Login</button>
-                    </div>
-
-                    <?php if (isset($_SESSION['student_error'])): ?>
-                        <div class="alert alert-danger mt-2"><?= htmlspecialchars($_SESSION['student_error']) ?></div>
-                        <?php unset($_SESSION['student_error'], $_SESSION['student_input']); ?>
-                    <?php endif; ?>
-
-                    
-                </form>
-              
-                <div class="text-end">
-                    <a href="forgot_password_student.php" class="text-dark text-decoration-none forgot">Forgot Password?</a>
-                </div>
-                
-                <p class="mt-3 text-center">
-                    <button type="button" class="btn btn-link p-0 text-primary text-decoration-none" onclick="toggleForms()">Login as Admin/Teacher</button>
-                </p>
-            </div>
         </div>
     </div>
 </div>
 
 <script src="./assets/js/bootstrap.min.js"></script>
 <script>
-function toggleForms() {
-    document.getElementById('userFormContainer').classList.toggle('d-none');
-    document.getElementById('studentFormContainer').classList.toggle('d-none');
-}
 
 function togglePassword(inputId, iconId) {
     const input = document.getElementById(inputId);

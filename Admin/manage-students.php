@@ -1,6 +1,11 @@
 <?php 
 session_start();
-require_once __DIR__ . '/../config/db.php';
+require_once  '../config/db.php';
+
+if (empty($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
 
 // Session validation
 if (!isset($_SESSION['email']) || empty($_SESSION['role'])) {
@@ -18,7 +23,7 @@ $students = [];
 
 // Fetch students
 try {
-    $sql = "SELECT * FROM students ORDER BY student_name ASC";
+    $sql = "SELECT * FROM students ORDER BY created_at DESC";
     $stmt = $conn->prepare($sql);
     $stmt->execute();
     $students = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -70,6 +75,7 @@ $email = htmlspecialchars($edit_student['email'] ?? '');
                 <select class="form-select select2 mx-2" id="manual-select" style="text-align: center;">
                     <option value="add">Add Student</option>
                     <option value="import">Import Students</option>
+                    <option value="update">Import Update RFID</option>
                 </select>
             </div>
         </div>
@@ -83,6 +89,8 @@ $email = htmlspecialchars($edit_student['email'] ?? '');
                 <div class="card-body">
                    
                     <form action="../admin/scripts/create-student.php" method="POST" enctype="multipart/form-data">
+                        <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                        
                         <?php if ($edit_student): ?>
                             <input type="hidden" name="student_id" value="<?= htmlspecialchars($edit_student['student_id']) ?>">
                         <?php endif; ?>
@@ -166,6 +174,7 @@ $email = htmlspecialchars($edit_student['email'] ?? '');
                 </div>
             </div>
         </div>
+
         <div class="container import mt-4" id="import">
             <div class="card shadow-lg">
                 <div class="card-header text-center">
@@ -184,6 +193,33 @@ $email = htmlspecialchars($edit_student['email'] ?? '');
 
                                     <div class="mb-3 text-center">
                                         <button type="submit" name="submit" class="btn btn-primary">Upload Excel/CSV</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container import mt-4" id="update">
+            <div class="card shadow-lg">
+                <div class="card-header text-center">
+                    <h2 class="mb-0">Import Student Update RFID</h2>
+                </div>
+                <div class="card-body">
+              
+                    <div class="container">
+                        <div class="row justify-content-center align-items-center h-100">
+                            <div class="col-md-6">
+                                <form action="../admin/scripts/update_rfid.php" method="POST" enctype="multipart/form-data">
+                                    <div class="mb-3 text-center">
+                                        <label for="file">File (Excel or CSV)</label>
+                                        <input type="file" id="file" name="file" accept=".xlsx, .csv" class="form-control">
+                                    </div>
+
+                                    <div class="mb-3 text-center">
+                                        <button type="submit" name="submit" class="btn btn-primary">Update RFID</button>
                                     </div>
                                 </form>
                             </div>
@@ -289,16 +325,24 @@ $email = htmlspecialchars($edit_student['email'] ?? '');
 
 
     <script>
-         // Hide the import form initially
+        // Hide the import form initially
         document.getElementById('import').style.display = 'none';
+        document.getElementById('manual').style.display = 'block';
+        document.getElementById('update').style.display = 'none';
 
         document.getElementById('manual-select').addEventListener('change', function() {
             const selectedValue = this.value;
             if (selectedValue === 'add') {
                 document.getElementById('manual').style.display = 'block';
                 document.getElementById('import').style.display = 'none';
+                document.getElementById('update').style.display = 'none';
             } else if (selectedValue === 'import') {
                 document.getElementById('import').style.display = 'block';
+                document.getElementById('manual').style.display = 'none';
+                document.getElementById('update').style.display = 'none';
+            } else if (selectedValue === 'update') {
+                document.getElementById('update').style.display = 'block';
+                document.getElementById('import').style.display = 'none';
                 document.getElementById('manual').style.display = 'none';
             }
         });

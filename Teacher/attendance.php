@@ -120,7 +120,7 @@ $courses = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </div>
 
         <!-- Modal: Student Attendance Marking -->
-        <div class="modal fade" id="attendanceModal" tabindex="-1" aria-labelledby="attendanceModalLabel" aria-hidden="true">
+        <div class="modal fade" id="attendanceModal" tabindex="-1" aria-labelledby="attendanceModalLabel" aria-hidden="true" data-bs-backdrop="static">
             <div class="modal-dialog modal-custom">
                 <div class="modal-content">
                     
@@ -132,6 +132,10 @@ $courses = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                     <!-- Modal Body: Student Attendance Table -->
                     <div class="modal-body">
+
+                        <div id="scannedStudentPicture" class="text-center mb-3"></div>
+
+
                         <table class="table table-striped table-bordered tContainer">
                             <thead>
                                 <tr>
@@ -195,6 +199,13 @@ $courses = $stmt->fetchAll(PDO::FETCH_ASSOC);
             });
         });
 
+        function renumberRows() {
+            const rows = document.querySelectorAll('#attendanceTable tr');
+            rows.forEach((row, index) => {
+                row.cells[0].textContent = index + 1;
+            });
+        }
+
         // Initialize WebSocket connection (update URL as needed)
         const socket = new WebSocket("ws://localhost:9000");
 
@@ -256,12 +267,13 @@ $courses = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                     school_student_id: student.school_student_id,
                                     student_name: student.student_name,
                                     rfid_tag: student.rfid_tag,
+                                    picture: student.picture,
                                     status: "Absent",
                                     courseName,
                                     section,
                                     setGroup,
                                     timestamp: "",
-                                    attendance_time: time
+                                    attendance_time: time       
                                 });
                             }
                         });
@@ -290,6 +302,16 @@ $courses = $stmt->fetchAll(PDO::FETCH_ASSOC);
             if (data.type === "attendance") {
                 const scannedStudent = window.allStudents.find(student => student.rfid_tag === data.rfid);
 
+                const pictureContainer = document.getElementById("scannedStudentPicture");
+                const uploadsPath = '../assets/uploads/';
+
+                if (scannedStudent.picture) {
+                    pictureContainer.innerHTML = `<img src="${uploadsPath + scannedStudent.picture}" alt="Student Picture" class="img-thumbnail">`;
+                } else {
+                    pictureContainer.innerHTML = `<p>No picture available</p>`;
+                }
+
+
                 if (scannedStudent) {
                     const currentTime = new Date();
                     const attendanceTimeStr = document.getElementById("attendance_time").value;
@@ -304,7 +326,7 @@ $courses = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         studentRow = document.createElement("tr");
                         studentRow.setAttribute("data-student-id", scannedStudent.student_id);
                         studentRow.innerHTML = `
-                            <td>${window.allStudents.indexOf(scannedStudent) + 1}</td>
+                            <td></td> <!-- will renumber -->
                             <td>${scannedStudent.school_student_id}</td>
                             <td>${scannedStudent.student_name}</td>
                             <td>${scannedStudent.courseName}</td>
@@ -313,11 +335,14 @@ $courses = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <td class="attendance-status">${status}</td>
                             <td class="attendance-time">${timestamp}</td>
                         `;
-                        document.getElementById("attendanceTable").appendChild(studentRow);
+                        const tbody = document.getElementById("attendanceTable");
+                        tbody.insertBefore(studentRow, tbody.firstChild);  // insert at top
+                        renumberRows();
                     } else {
                         studentRow.querySelector(".attendance-status").textContent = status;
                         studentRow.querySelector(".attendance-time").textContent = timestamp;
                     }
+
 
                     scannedStudent.status = status;
                     scannedStudent.timestamp = timestamp;

@@ -20,7 +20,7 @@ const port = new SerialPort({ path: 'COM17', baudRate: 9600 });
 const parser = port.pipe(new ReadlineParser({ delimiter: '\r\n' }));
 
 // Track mode per connected client
-const clientModes = new Map();
+const clientModes = new Map();  
 
 // On RFID scan from Arduino
 parser.on('data', async (rfidTag) => {

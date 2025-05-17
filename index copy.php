@@ -45,10 +45,7 @@
 
         /* Login Button Styling */
         .login-btn {
-            display: flex;
-            flex-direction: column;
-            gap: 20px; /* Space between buttons */
-            margin-top: 30px;
+            margin-top: 20px;
             opacity: 0;
             animation: fadeInUp 2s 0.5s forwards;
         }
@@ -93,8 +90,9 @@
     </header>
 
     <div class="login-btn">
-        <a href="./login/user-login.php">Admin / Teacher Login</a>
-        <a href="./login/student-login.php">Student Login</a>
+        <!--<a href="login.php">Login</a>-->
+        <a href="user-login.php" class="btn btn-primary">Admin / Teacher Login</a>
+        <a href="student-login.php" class="btn btn-success">Student Login</a>
     </div>
 
 </body>

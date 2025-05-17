@@ -1,8 +1,8 @@
 /* ==============================
    MAIN DASHBOARD STYLING
-==============================
+==============================*/
 
-/ Dashboard cards grid layout /
+/* Dashboard cards grid layout */
 .dashboard-cards {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
@@ -12,7 +12,7 @@
     align-items: center;
 }
 
-/ Individual dashboard card style /
+/* Individual dashboard card style */
 .dashboard-card {
     background-color: var(--body-color);
     border-radius: 10px;
@@ -27,13 +27,13 @@
     border: 1px solid var(--title-color);
 }
 
-/ Hover effect for dashboard card /
+/* Hover effect for dashboard card */
 .dashboard-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 }
 
-/ Dashboard card heading style /
+/* Dashboard card heading style */
 .dashboard-card h2 {
     font-size: 1.8rem;
     font-weight: 600;
@@ -41,13 +41,13 @@
     margin-bottom: 1rem;
 }
 
-/ Dashboard card paragraph style /
+/* Dashboard card paragraph style */
 .dashboard-card p {
     font-size: 1rem;
     color: var(--title-color);
     margin: 0;
 }
-*/
+
 
 /* ==============================
 COURSE & MASTERLIST

@@ -55,6 +55,8 @@ COURSE & MASTERLIST
 
 #courseMastelistCard {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    width: 18rem;
+    
 }
 
 #courseMastelistCard:hover {
@@ -205,6 +207,21 @@ BADGE STYLING
 .badge.bg-purple {
     background-color: #6f42c1 !important; 
     color: #ffffff !important; 
+}
+
+/* ==============
+STUDENT PICTURE
+================ */
+
+#scannedStudentPicture {
+    max-width: 200px; /* or any preferred size */
+    height: auto;
+    display: block;
+    margin: 0 auto;
+    border-radius: 10px;
+    box-shadow: var(--box-shadow);
+    border: 1px solid var(--title-color);
+    
 }
 
 
